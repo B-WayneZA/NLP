@@ -1,0 +1,5 @@
+EthioEmo has a choice between Ethiopia, somali, aramaric 
+Emotion annotations (often richer / more detailed)
+
+will not be diretly compared to BRIGHTER but will be used as a supporting annotation, 
+just need a choice of lanaguage
