@@ -1,0 +1,21 @@
+% Table 1: Baseline Model Performance
+\begin{tabular}{lrrrr}
+\toprule
+language & f1_macro & f1_micro & precision_macro & recall_macro \\
+\midrule
+zul & 0.257 & 0.341 & 0.235 & 0.290 \\
+xho & 0.265 & 0.471 & 0.247 & 0.321 \\
+swa & 0.247 & 0.293 & 0.214 & 0.298 \\
+\bottomrule
+\end{tabular}
+
+% Table 2: Weak Labels Per Language
+\begin{tabular}{lrr}
+\toprule
+Language & Weak Label Count & Avg F1 \\
+\midrule
+swa & 1 & 0.069 \\
+xho & 3 & 0.044 \\
+zul & 1 & 0.075 \\
+\bottomrule
+\end{tabular}
