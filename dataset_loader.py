@@ -23,7 +23,7 @@ from pathlib import Path
 # CONFIG
 # ─────────────────────────────────────────────
 
-DATA_ROOT = Path("BRIGHTER")  # Adjust if your data is in a different location
+DATA_ROOT = Path("data/BRIGHTER")  # Adjust if your data is in a different location
 
 LANGUAGES = {
     "zul": "isiZulu",
