@@ -1,0 +1,4 @@
+language,model,train_source,train_size,test_size,f1_macro,f1_micro,precision_macro,recall_macro,hamming_loss,jaccard_macro,elapsed_seconds,status
+zul,mbert,validation,875,2047,0.0,0.0,0.0,0.0,0.08304836345872008,0.0,970.4214518070221,success
+xho,mbert,validation,682,1594,0.0,0.0,0.0,0.0,0.15809284818067754,0.0,692.3323032855988,success
+swa,mbert,train,3307,3312,0.0,0.0,0.0,0.0,0.09973832528180354,0.0,2805.5482306480408,success
