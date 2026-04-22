@@ -1,10 +1,7 @@
 """
-feature_analysis.py
-===================
-Extract and visualize top TF-IDF features per emotion label (stretch goal).
 
-Usage:
-    python src/feature_analysis.py --lang swa --top_k 15
+Extract and visualize top TF-IDF features per emotion label (stretch goal).
+This script loads the trained baseline model for a specified language, extracts the top TF-IDF features that are most strongly associated with each emotion label (both positively and negatively), and prints them in a readable format. It also saves the extracted features to a JSON file for further analysis.
 """
 
 import argparse

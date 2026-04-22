@@ -1,6 +1,5 @@
 """
-results.py
-==========
+
 Central utility for managing and accessing experiment results.
 Provides convenience functions for loading, viewing, and comparing outputs.
 """
@@ -9,17 +8,7 @@ import pandas as pd
 from pathlib import Path
 from typing import Optional, Dict, List
 
-
-# ─────────────────────────────────────────────
-# PATHS
-# ─────────────────────────────────────────────
-
 RESULTS_DIR = Path("results")
-
-
-# ─────────────────────────────────────────────
-# LOADERS
-# ─────────────────────────────────────────────
 
 def load_baseline_metrics() -> pd.DataFrame:
     """Load baseline metrics table."""
@@ -62,9 +51,6 @@ def load_observations() -> str:
         return f.read()
 
 
-# ─────────────────────────────────────────────
-# COMPARISON UTILITIES
-# ─────────────────────────────────────────────
 
 def compare_languages(metric: str = "f1_macro") -> pd.DataFrame:
     """
@@ -141,10 +127,6 @@ def get_most_imbalanced_labels(top_k: int = 5) -> pd.DataFrame:
     return most_imbalanced
 
 
-# ─────────────────────────────────────────────
-# DISPLAY UTILITIES
-# ─────────────────────────────────────────────
-
 def print_summary():
     """Print a quick summary of all results."""
     print("\n" + "="*70)
@@ -185,11 +167,6 @@ def print_summary():
     
     print("\n" + "="*70 + "\n")
 
-
-# ─────────────────────────────────────────────
-# EXPORT UTILITIES
-# ─────────────────────────────────────────────
-
 def export_for_paper(output_path: str = "results/paper_tables.txt"):
     """
     Export key tables in LaTeX-friendly format for paper inclusion.
@@ -218,9 +195,6 @@ def export_for_paper(output_path: str = "results/paper_tables.txt"):
     print(f"✔ Exported paper tables to {output_path}")
 
 
-# ─────────────────────────────────────────────
-# MAIN (for testing)
-# ─────────────────────────────────────────────
 
 if __name__ == "__main__":
     print("\nTesting results.py utilities...\n")

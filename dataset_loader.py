@@ -1,6 +1,5 @@
 """
-W2-01 to W2-03: Dataset Validation & Standardisation
-=====================================================
+
 Loads, validates, and standardises BRIGHTER parquet datasets for:
   - isiZulu  (zul)
   - isiXhosa (xho)
@@ -19,11 +18,9 @@ import numpy as np
 from pathlib import Path
 
 
-# ─────────────────────────────────────────────
-# CONFIG
-# ─────────────────────────────────────────────
 
-DATA_ROOT = Path("data/BRIGHTER")  # Adjust if your data is in a different location
+
+DATA_ROOT = Path("data/BRIGHTER") 
 
 LANGUAGES = {
     "zul": "isiZulu",
@@ -37,13 +34,10 @@ SPLITS = {
     "test":       "test.parquet",
 }
 
-# Expected output columns (unified schema)
 SCHEMA_COLUMNS = ["text", "labels", "language"]
 
 
-# ─────────────────────────────────────────────
-# STEP 1 — LOAD
-# ─────────────────────────────────────────────
+
 
 def load_raw_datasets(data_root: Path, languages: dict, splits: dict) -> dict:
     """
@@ -70,9 +64,7 @@ def load_raw_datasets(data_root: Path, languages: dict, splits: dict) -> dict:
     return raw_data
 
 
-# ─────────────────────────────────────────────
-# STEP 2 — INSPECT SCHEMA
-# ─────────────────────────────────────────────
+
 
 def inspect_schema(raw_data: dict, languages: dict, n_rows: int = 3) -> dict:
     """
@@ -178,9 +170,7 @@ def _detect_label_columns(df: pd.DataFrame, text_col: str):
     raise ValueError("Could not detect label columns.")
 
 
-# ─────────────────────────────────────────────
-# STEP 3 — STANDARDISE
-# ─────────────────────────────────────────────
+
 
 def build_emotion_index(raw_data: dict, schema_info: dict) -> list:
     """
@@ -331,9 +321,6 @@ def standardise_all(
     return datasets
 
 
-# ─────────────────────────────────────────────
-# STEP 4 — VALIDATE OUTPUT
-# ─────────────────────────────────────────────
 
 def validate_datasets(datasets: dict, emotion_index: list) -> bool:
     """
@@ -375,9 +362,6 @@ def validate_datasets(datasets: dict, emotion_index: list) -> bool:
     return all_passed
 
 
-# ─────────────────────────────────────────────
-# STEP 5 — SUMMARY STATS
-# ─────────────────────────────────────────────
 
 def print_summary(datasets: dict, emotion_index: list):
     """Print label distribution summary per language/split."""
@@ -402,7 +386,7 @@ def print_summary(datasets: dict, emotion_index: list):
 
 def run_pipeline(data_root: Path = DATA_ROOT) -> tuple:
     """
-    Full W2 pipeline. Returns (datasets, emotion_index).
+  
 
     datasets : dict[lang][split] -> DataFrame
     emotion_index : list[str]
@@ -438,9 +422,6 @@ def run_pipeline(data_root: Path = DATA_ROOT) -> tuple:
     return datasets, emotion_index
 
 
-# ─────────────────────────────────────────────
-# ENTRY POINT
-# ─────────────────────────────────────────────
 
 if __name__ == "__main__":
     datasets, emotion_index = run_pipeline()

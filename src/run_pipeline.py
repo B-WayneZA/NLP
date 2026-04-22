@@ -1,14 +1,4 @@
-"""
-run_week2_full.py
-=================
-Master script to execute all Week 2 analyses:
-  - Issue #3: Run baseline per language
-  - Issue #4: Exploratory analysis
-
-Usage:
-    python run_week2_full.py
-"""
-
+## runs the baseline models + exploratory analysis
 import sys
 from pathlib import Path
 
@@ -29,17 +19,16 @@ def main():
     print("="*70)
     
     try:
-        # Issue #3: Run baseline
         print("\n[PHASE 1] Running baseline models...")
         print("-"*70)
         all_results, emotion_index = run_baseline()
         
-        # Issue #4: Exploratory analysis
+    
         print("\n[PHASE 2] Running exploratory analysis...")
         print("-"*70)
         run_exploratory()
         
-        # Generate summary
+        
         print("\n[PHASE 3] Generating final summary...")
         print("-"*70)
         print_summary()

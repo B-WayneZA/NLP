@@ -1,6 +1,5 @@
 """
-metrics.py
-==========
+
 Multi-label classification evaluation metrics.
 Supports macro/micro F1, precision, recall with zero_division handling.
 """

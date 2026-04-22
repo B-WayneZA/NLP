@@ -1,8 +1,4 @@
 """
-exploratory_analysis.py
-=======================
-Week 2 — Issue #4: Baseline Exploratory Observations
-
 Generates:
   - weak_labels.csv         : Low-performing emotion labels
   - class_distribution.csv  : Label frequency analysis
@@ -22,18 +18,9 @@ from dataset_loader import run_pipeline
 from run_baseline import main as run_baseline_main
 
 
-# ─────────────────────────────────────────────
-# CONFIG
-# ─────────────────────────────────────────────
-
 RESULTS_DIR = Path("results")
 WEAK_LABEL_THRESHOLD = 0.15  # F1 below this is considered weak
 EXAMPLE_LIMIT = 10  # Max error examples per category
-
-
-# ─────────────────────────────────────────────
-# 1. WEAK LABELS ANALYSIS
-# ─────────────────────────────────────────────
 
 def identify_weak_labels(all_results: dict, emotion_index: list) -> pd.DataFrame:
     """
@@ -104,9 +91,7 @@ def _diagnose_weakness(f1, precision, recall, support):
         return "general_weakness"
 
 
-# ─────────────────────────────────────────────
-# 2. CLASS DISTRIBUTION ANALYSIS
-# ─────────────────────────────────────────────
+
 
 def analyze_class_distribution(datasets: dict, emotion_index: list) -> pd.DataFrame:
     """Compute label frequency across train splits."""
@@ -152,9 +137,6 @@ def analyze_class_distribution(datasets: dict, emotion_index: list) -> pd.DataFr
     return dist_df
 
 
-# ─────────────────────────────────────────────
-# 3. ERROR EXAMPLES EXTRACTION
-# ─────────────────────────────────────────────
 
 def extract_error_examples(all_results: dict, emotion_index: list) -> pd.DataFrame:
     """
@@ -259,9 +241,6 @@ def _format_labels(label_vector: np.ndarray, emotion_index: list) -> str:
     return ", ".join(active_labels) if active_labels else "[none]"
 
 
-# ─────────────────────────────────────────────
-# 4. GENERATE OBSERVATION REPORT
-# ─────────────────────────────────────────────
 
 def generate_observation_report(
     all_results: dict,
@@ -362,9 +341,6 @@ def generate_observation_report(
     return "\n".join(report)
 
 
-# ─────────────────────────────────────────────
-# MAIN PIPELINE
-# ─────────────────────────────────────────────
 
 def main():
     """Run full exploratory analysis pipeline."""

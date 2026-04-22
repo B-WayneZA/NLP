@@ -1,6 +1,5 @@
 """
-run_baseline.py
-===============
+
 Execute baseline models for all languages with fallback training logic.
 Handles cases where train.parquet is missing (zul, xho).
 
@@ -22,18 +21,11 @@ from dataset_loader import run_pipeline
 from baseline import BaselineModel, TFIDF_CONFIG, LOGREG_CONFIG
 from metrics import compute_metrics, compute_per_label_metrics
 
-# ─────────────────────────────────────────────
-# CONFIG
-# ─────────────────────────────────────────────
-
 RESULTS_DIR = Path("results")
 MODELS_DIR = Path("models/baseline")
 RANDOM_STATE = 42
 
 
-# ─────────────────────────────────────────────
-# TRAINING WITH FALLBACK LOGIC
-# ─────────────────────────────────────────────
 
 def prepare_splits_with_fallback(splits: dict, lang_code: str) -> dict:
     """
@@ -169,11 +161,6 @@ def train_and_evaluate_with_fallback(
         },
         "model_path": str(model_path),
     }
-
-
-# ─────────────────────────────────────────────
-# MAIN EXECUTION
-# ─────────────────────────────────────────────
 
 def main():
     """Run baseline training and evaluation for all languages."""
