@@ -1,28 +1,28 @@
 language,text,true_labels,predicted_labels,error_type,notes
-zul,bashise ibhasi nezimoto bebhikisha,anger,[none],false_negative,No prediction despite ground truth labels
-zul,udj websta ujabulela ukungena kweyakhe kwi-top 10,joy,[none],false_negative,No prediction despite ground truth labels
-zul,ingwijikhwebu 'ngofe wavuka',surprise,[none],false_negative,No prediction despite ground truth labels
-zul,kuboshwe abebeshada nezimenywa enseleni,[none],"sadness, surprise",over_prediction,Predicted 2 vs true 0
-zul,indodakazi kahani ikhala ngabaholi ababhubhudla imali,[none],"sadness, surprise",over_prediction,Predicted 2 vs true 0
-zul,umangalelwe uthisha oxhimfe umfundi 'obekopela',[none],"anger, fear, sadness",over_prediction,Predicted 3 vs true 0
-zul,kuminze ibhanoyi ebelithwele abawu-189,"sadness, surprise",sadness,partial_match,"Some labels correct, others missed or added"
-zul,kufe ingane kuhlaselwa owamatekisi,sadness,"fear, sadness",partial_match,"Some labels correct, others missed or added"
+zul,bayaveva ngokujola kukathisha nomfundi ecomtech,anger,[none],false_negative,No prediction despite ground truth labels
+zul,kuqhume iqupha izikhulu ze-anc zibanga owesifazane,"anger, disgust",[none],false_negative,No prediction despite ground truth labels
+zul,"uzola wake wathi ""bamchith' amapop corn agcwal' istradi"" izolo ngibone leyonto💔💔💔. a motorist was brutally killed ubuchopho baphuma😭😭😭💔. aai pinetown mina ngi right ngayo, angifuni ukungasho😭🤞🏽 ngisay",sadness,[none],false_negative,No prediction despite ground truth labels
+zul,ukolisi ukhathazekile ngabahluphekayo ngesikhathi secovid-19,[none],"fear, sadness",over_prediction,Predicted 2 vs true 0
+zul,ingebhe umndeni ushiselwa izimoto,sadness,"disgust, fear, sadness",over_prediction,Predicted 3 vs true 1
+zul,isharks izakhele umsebenzi ibhaxabulwa,[none],"joy, surprise",over_prediction,Predicted 2 vs true 0
+zul,kushiswe ihhovisi lekhansela elisolwa ngenkohlakalo,"anger, sadness","fear, sadness",partial_match,"Some labels correct, others missed or added"
 zul,bagxeka ukuhlaselwa kwethempeli,anger,"anger, disgust",partial_match,"Some labels correct, others missed or added"
-xho,ukriel uliphakamisele phezulu ilizwe lakhe,joy,[none],false_negative,No prediction despite ground truth labels
-xho,kubanjwe isibini sintsintsitheka ziziyobisi,"joy, surprise",[none],false_negative,No prediction despite ground truth labels
-xho,kubanjwe abarhanelwa abane bebanjelwa ubuqhophololo ngexesha lecovid,"sadness, surprise",[none],false_negative,No prediction despite ground truth labels
-xho,iyunithi yase makhanda yek9 ibambe umrhanelwa kwaye yathimba ne abalone | ec indab,[none],"anger, disgust, sadness",over_prediction,Predicted 3 vs true 0
-xho,batsho bancama bezama ukufumana kwezi r350 kwathiwa bayaphangela kwaye ba registered for uif abase maclear | ec indab,[none],"anger, disgust, sadness, surprise",over_prediction,Predicted 4 vs true 0
-xho,"nceda umntwana, kutsho usapho lukaxolani gwala",sadness,"fear, sadness, surprise",over_prediction,Predicted 3 vs true 1
-xho,mithathu(3) imizimba yamadoda efunyenwe ngakwidami lasemtata. | ec indab,sadness,"anger, disgust, sadness",partial_match,"Some labels correct, others missed or added"
-xho,abakhi ababini babhubhe kwingozi eyothusayo egqeberha | ec indab,sadness,"sadness, surprise",partial_match,"Some labels correct, others missed or added"
-xho,indoda ilahlwe yatshisa amatyotyombe,surprise,"sadness, surprise",partial_match,"Some labels correct, others missed or added"
-swa,usipolala hii weekend ujue the next chance unapata ni hapo mid january zile sherehe ziko hapa mbele,joy,[none],false_negative,No prediction despite ground truth labels
-swa,@<username> @<username> @<username> kuna medhali inayosema mzee kumwoa msichana ni kama kununua kitabu wengine  wasome,joy,[none],false_negative,No prediction despite ground truth labels
-swa,"kusearch job huku kenya imekua noma,beste yangu flani imebidii adye nywele grey kidogo ndio ikae ni kama ako na experience.",sadness,[none],false_negative,No prediction despite ground truth labels
-swa,@<username> kumekua kukinyesha sana,[none],"joy, sadness",over_prediction,Predicted 2 vs true 0
-swa,@<username> @<username> tena kwa sana,[none],"joy, sadness",over_prediction,Predicted 2 vs true 0
-swa,ni wapi penye raha watu hawapigani mavumbo...where?,[none],"fear, surprise",over_prediction,Predicted 2 vs true 0
-swa,hii ni kitui kweli,surprise,"anger, surprise",partial_match,"Some labels correct, others missed or added"
-swa,police wako kila mahali hapa ngara sio kwa hewa sio chini kwani wao ndio wana deal na corona??,surprise,"anger, surprise",partial_match,"Some labels correct, others missed or added"
-swa,nilijificha nikaenda kudishi samosa peke yangu nisishare na mtu now my stomach wants to end me 😭😭😭,"anger, sadness",sadness,partial_match,"Some labels correct, others missed or added"
+zul,owasethekwini uzuze umsebenzi wokwenza izindondo zediff,joy,"joy, surprise",partial_match,"Some labels correct, others missed or added"
+xho,"“ukuba imagic ingabetha ichiefs, iyakuba ngathi iphumelele inedbank cup”",joy,[none],false_negative,No prediction despite ground truth labels
+xho,umolefi ntseki ucela uluntu luxhase abafana bafana phambi komdlalo wemandela challenge,joy,[none],false_negative,No prediction despite ground truth labels
+xho,ucristiano ronaldo ulihlangule ilizwe lakhe kwispain!,joy,[none],false_negative,No prediction despite ground truth labels
+xho,kubhengezwe igama lomtu omnye obhubhele kwiziko lokuphehla iintsimbi ecoega | ec indab,sadness,"disgust, sadness, surprise",over_prediction,Predicted 3 vs true 1
+xho,ibanjwe neziyobisi indoda eneminyaka engamashumi amahlanu anesithandathu (56)e burgersdorp | ec indab,surprise,"disgust, sadness, surprise",over_prediction,Predicted 3 vs true 1
+xho,"manyala wani la, wokudlwengulisa iigusha ngabantwana? | ec indab",disgust,"anger, disgust, sadness, surprise",over_prediction,Predicted 4 vs true 1
+xho,abanabudoda ngenxa yokoluswa gwenxa,sadness,"anger, sadness",partial_match,"Some labels correct, others missed or added"
+xho,sisixhiphothi sendoda(63) endala netyholwa ngokudlwengula imveku eneminyaka emine(4) ubudala. | ec indab,"anger, sadness","anger, disgust, sadness",partial_match,"Some labels correct, others missed or added"
+xho,kulahleke intombazana eneminyaka elishumi elinesixhenxe (17) ubudala | ec indab,sadness,"disgust, sadness, surprise",partial_match,"Some labels correct, others missed or added"
+swa,sijui nibuy tu mzinga moja nidrown nayo sorrows hadi 6?,sadness,[none],false_negative,No prediction despite ground truth labels
+swa,@<username> mwanamke hana belly ni kiweteee 🙄🙄,disgust,[none],false_negative,No prediction despite ground truth labels
+swa,nini ii inaitwa badoo?,surprise,[none],false_negative,No prediction despite ground truth labels
+swa,magwaya ni mbwa,[none],"anger, surprise",over_prediction,Predicted 2 vs true 0
+swa,hapa kwa rihanna tutapanga line mpaka yesu arudi,[none],"anger, joy",over_prediction,Predicted 2 vs true 0
+swa,"kwani huyo bwana alipelekwa akatae na bibi, hawakuwa wamedoiana kabla aolewe? i don't support her at all, that was unwise",[none],"anger, surprise",over_prediction,Predicted 2 vs true 0
+swa,"huyu mtu alidunga hawa watoto hii shindano, hakuna kitu alifanyiwa? fuck man",anger,"anger, surprise",partial_match,"Some labels correct, others missed or added"
+swa,"hahaha i shaved so that i look 17 alafu nyinyi ni kuzeeka mnadai kuzeeka mbio , o.k",surprise,"joy, surprise",partial_match,"Some labels correct, others missed or added"
+swa,na mnunue magari mtembee hii kenya si ati kushtuka kila time nikichange location maumbwa nyinyi 😅😅😅,anger,"anger, joy",partial_match,"Some labels correct, others missed or added"

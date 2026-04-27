@@ -18,8 +18,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 # ─────────────────────────────────────────────
 # TOGGLES — set to True to enable each stage
 # ─────────────────────────────────────────────
-RUN_WEEK2 = False   # data loading + baseline + exploratory analysis
-RUN_WEEK3 = True  # mBERT + XLM-R fine-tuning
+RUN_WEEK2 = True   # data loading + baseline + exploratory analysis
+RUN_WEEK3 = False  # mBERT + XLM-R fine-tuning
 RUN_WEEK4 = False  # cross-lingual analysis + final evaluation
 
 
