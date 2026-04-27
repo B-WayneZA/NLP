@@ -8,11 +8,11 @@ Runs mBERT and XLM-R on all languages and generates:
 
 Usage:
     # Run everything
-    python run_week3_full.py
+    python3 run_transformer_pipeline.py
 
     # Run one model only
-    python run_week3_full.py --model mbert
-    python run_week3_full.py --model xlmr
+    python3 run_transformer_pipeline.py --model mbert
+    python3 run_transformer_pipeline.py --model xlmr
 """
 
 import sys
@@ -22,8 +22,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from dataset_loader import run_pipeline
-from src.transformers.transformer_train import (
+from src.data.dataset_loader import run_pipeline
+from src.transformers_pipeline.transformer_train import (
     run_model_all_languages,
     results_to_dataframe,
     save_per_label_metrics,
@@ -127,9 +127,6 @@ def log_experiment_config():
     print("="*80)
 
 
-# ─────────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────────
 
 def main(run_mbert: bool = True, run_xlmr: bool = True):
     print("\n" + "="*80)
@@ -200,13 +197,12 @@ def main(run_mbert: bool = True, run_xlmr: bool = True):
         if baseline_df is not None:
             print("  ✔ Baseline results loaded for comparison")
         else:
-            print("  ⚠ No baseline results found — run Week 2 first for full comparison")
+            print("  ⚠ No baseline results found — run baseline first for full comparison")
 
         # Print final comparison
         print_full_comparison(summary_df, baseline_df)
 
     print("\n" + "="*80)
-    print("  ✅ WEEK 3 COMPLETE")
     print("="*80)
     print("\nGenerated files:")
     if run_mbert:

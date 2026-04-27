@@ -1,10 +1,7 @@
 """
-baseline.py
-===========
+
 TF-IDF + One-vs-Rest Logistic Regression baseline for multi-label emotion classification.
 
-Usage:
-    python3 baseline.py
 """
 
 import os
@@ -22,7 +19,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 # Add parent directory to path to import dataset_loader
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from dataset_loader import run_pipeline
+from data.dataset_loader import run_pipeline
 
 # Import metrics module
 from metrics import compute_metrics, compute_per_label_metrics, print_metrics_table

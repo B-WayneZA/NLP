@@ -14,7 +14,7 @@ import pandas as pd
 # Import from dataset loader to get emotion index
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from dataset_loader import run_pipeline
+from data.dataset_loader import run_pipeline
 
 
 def load_model(lang_code: str, models_dir: Path = Path("models/baseline")):

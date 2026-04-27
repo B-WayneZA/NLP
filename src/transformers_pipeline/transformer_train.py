@@ -10,6 +10,8 @@ Key design decisions:
   - Fallback train logic mirrors Week 2 baseline (validation → train)
 """
 
+# pyright: reportMissingImports=false
+
 import os
 import sys
 import time
@@ -32,8 +34,8 @@ from transformers import (
 
 # Import project modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from transformer_dataset import build_datasets
-from transformer_metrics import (
+from src.transformers_pipeline.transformer_dataset import build_datasets
+from src.transformers_pipeline.transformer_metrics import (
     make_compute_metrics,
     compute_metrics_from_arrays,
     compute_per_label_metrics,
@@ -57,7 +59,7 @@ MODELS = {
 TRAINING_DEFAULTS = {
     "num_train_epochs":              1,
     "learning_rate":                 2e-5,
-    "per_device_train_batch_size":   8,
+    "per_device_train_batch_size":   2,
     "per_device_eval_batch_size":    16,
     "weight_decay":                  0.01,
     "eval_strategy":                 "epoch",  # transformers 5.x (was evaluation_strategy)
