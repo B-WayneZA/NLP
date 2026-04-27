@@ -14,8 +14,8 @@ from collections import Counter
 
 # Import existing modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from dataset_loader import run_pipeline
-from run_baseline import main as run_baseline_main
+from data.dataset_loader import run_pipeline
+from baseline.run_baseline import main as run_baseline_main
 
 
 RESULTS_DIR = Path("results")

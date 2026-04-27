@@ -17,8 +17,8 @@ from datetime import datetime
 
 # Import existing modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from dataset_loader import run_pipeline
-from baseline import BaselineModel, TFIDF_CONFIG, LOGREG_CONFIG
+from data.dataset_loader import run_pipeline
+from baseline.model import BaselineModel, TFIDF_CONFIG, LOGREG_CONFIG
 from metrics import compute_metrics, compute_per_label_metrics
 
 RESULTS_DIR = Path("results")

@@ -4,3 +4,6 @@ datasets
 transformers 
 numpy 
 matplotlib
+torch
+transformers
+pyarrow
