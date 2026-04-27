@@ -47,7 +47,7 @@ def run_week2():
 
     # We call run_baseline once here, capture the results, then pass them
     # directly into the analysis functions to avoid running baseline twice.
-    from analysis.exploratory_analysis import (
+    from src.analysis.exploratory_analysis import (
         identify_weak_labels,
         analyze_class_distribution,
         extract_error_examples,

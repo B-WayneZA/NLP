@@ -12,8 +12,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from data.dataset_loader import run_pipeline
-from transformers_pipeline.transformer_train import (
+from src.data.dataset_loader import run_pipeline
+from src.transformers_pipeline.transformer_train import (
     run_model_all_languages,
     results_to_dataframe,
     save_per_label_metrics,

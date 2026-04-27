@@ -10,7 +10,6 @@ Key design decisions:
   - Fallback train logic mirrors Week 2 baseline (validation → train)
 """
 
-# pyright: reportMissingImports=false
 
 import os
 import sys
