@@ -467,8 +467,7 @@ reproducible lower bound and is computationally accessible on consumer
 hardware.
 The \texttt{class\_weight=``balanced''} configuration mitigated---though did
 not eliminate---the effect of class imbalance.
-The modular pipeline architecture allows baseline and transformer experiments
-to share the same data loading and evaluation utilities, ensuring comparability.
+The modular pipeline ensures baseline and transformer experiments share data loading and evaluation utilities.
 
 \subsection{Challenges}
 
@@ -552,8 +551,6 @@ cross-lingual projection from Swahili to isiZulu and isiXhosa,
 fine-tuning AfroXLMR \citep{alabi2022adapting} which is better adapted
 for Bantu morphology, and per-class threshold tuning to improve the
 precision--recall balance on rare emotions.
-Including Amharic emotion data would additionally test
-whether genealogical relatedness aids transfer beyond data availability.
 
 % ──────────────────────────────────────────────────────────────────────────────
 \bibliography{custom}
