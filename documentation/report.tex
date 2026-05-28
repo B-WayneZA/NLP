@@ -228,11 +228,11 @@ Hamming loss, and macro Jaccard score.
 \subsection{Baseline Performance}
 
 Table~\ref{tab:baseline} reports TF-IDF + Logistic Regression results.
-Macro F1 scores range from 0.247 (Swahili) to 0.265 (isiXhosa).
+Macro F1 scores range from 0.250 (Swahili) to 0.265 (isiXhosa).
 Despite isiXhosa and isiZulu using the development set as training data
 (limiting training size to 682 and 875 samples respectively), their macro F1
 is comparable to Swahili, which has 3{,}307 training samples.
-However, Swahili achieves a notably lower micro F1 (0.293), suggesting its
+However, Swahili achieves a notably lower micro F1 (0.297), suggesting its
 predictions are more uniformly spread but less precise on frequent classes.
 
 \begin{table}[h]
@@ -245,7 +245,7 @@ predictions are more uniformly spread but less precise on frequent classes.
 \midrule
 isiZulu  & 0.257 & 0.341 & 0.235 & 0.290 \\
 isiXhosa & 0.265 & 0.471 & 0.247 & 0.321 \\
-Swahili  & 0.247 & 0.293 & 0.214 & 0.298 \\
+Swahili  & 0.250 & 0.297 & 0.215 & 0.304 \\
 \bottomrule
 \end{tabular}
 \caption{TF-IDF + Logistic Regression baseline results.}
@@ -272,7 +272,7 @@ We attribute the remaining macro F1 gap to the data constraint and
 the severe sparsity of minority emotion classes (disgust at 2.9\%,
 fear at 3.1\% of isiZulu training labels).
 Swahili, with the largest training set (3{,}307 examples), achieves macro
-F1 of 0.193 --- still below its TF-IDF baseline of 0.248, but with
+F1 of 0.193 --- still below its TF-IDF baseline of 0.250, but with
 recall of 0.769, reflecting the weighted loss effectively promoting
 minority-class predictions at the cost of precision (0.112).
 
@@ -322,7 +322,7 @@ below mBERT's 0.240, with comparable micro F1 of 0.447.
 For Swahili, XLM-R (F1 = 0.223) narrows the gap with mBERT (F1 = 0.193)
 when trained on 3{,}307 examples, confirming that XLM-R benefits more
 from additional training data.
-Notably, the TF-IDF baseline (F1 = 0.247--0.265) outperforms both
+Notably, the TF-IDF baseline (F1 = 0.250--0.265) outperforms both
 transformer models across all three languages under these data constraints,
 highlighting the challenge of deploying large pretrained transformers in
 genuinely low-resource settings without dedicated hyperparameter tuning
@@ -474,7 +474,7 @@ We presented a comparative evaluation of TF-IDF and multilingual transformer
 models for multi-label emotion classification in three Bantu languages
 (isiZulu, isiXhosa, Swahili) using the BRIGHTER dataset.
 
-The TF-IDF + Logistic Regression baseline achieves macro F1 of 0.247--0.265,
+The TF-IDF + Logistic Regression baseline achieves macro F1 of 0.250--0.265,
 establishing a reproducible lower bound.
 Key findings include: (1) severe class imbalance---particularly for
 \textit{disgust} and \textit{fear}---substantially harms recall on minority

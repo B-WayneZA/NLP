@@ -1,13 +1,13 @@
 # Baseline Model Exploratory Observations
 
-**Generated:** 2026-04-27 18:40:10
+**Generated:** 2026-05-28 10:31:55
 
 ---
 
 ## 1. Overall Performance
 
 - **Best performing language:** XHO (F1 Macro: 0.2650)
-- **Worst performing language:** SWA (F1 Macro: 0.2475)
+- **Worst performing language:** SWA (F1 Macro: 0.2504)
 - **ZUL:** Trained on validation (875 samples), tested on 2047 samples
 - **XHO:** Trained on validation (682 samples), tested on 1594 samples
 - **SWA:** Trained on train (3307 samples), tested on 3312 samples
@@ -18,7 +18,7 @@ Found **5 weak labels** across languages:
 
 
 ### SWA
-- **fear**: F1=0.069, Recall=0.064, Issue: extremely_low_f1
+- **fear**: F1=0.067, Recall=0.064, Issue: extremely_low_f1
 
 ### XHO
 - **disgust**: F1=0.017, Recall=0.125, Issue: extremely_low_f1
