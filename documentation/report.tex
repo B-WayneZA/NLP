@@ -101,6 +101,17 @@ language communities.
         severe data scarcity and class imbalance?
 \end{enumerate}
 
+\paragraph{Contributions.}
+The main contributions of this work are:
+(1) a reproducible multi-label emotion classification pipeline for three Bantu
+languages that can serve as a reference implementation for future work;
+(2) a systematic comparison of TF-IDF and two multilingual transformer models
+under matched, controlled evaluation conditions across three low-resource
+languages; and
+(3) an analysis of class imbalance effects, error patterns, and cross-lingual
+performance variation that provides practical insights for NLP development
+targeting underrepresented African languages.
+
 \paragraph{Responsible NLP.}
 This work directly addresses language underrepresentation.
 By building and evaluating pipelines for Bantu languages, we contribute
@@ -188,6 +199,18 @@ The EthioEmo dataset was considered for
 Amharic coverage but was not included in experiments due to data availability
 constraints; we note this as a limitation and direction for future work.
 
+\paragraph{Responsible NLP.}
+A recurring concern in African language NLP is that research priorities are
+often shaped by data availability rather than community need, and the
+languages covered by benchmarks reflect where annotation was most feasible
+rather than where NLP support is most urgently needed.
+The pre-training corpora for mBERT and XLM-R are also heavily dominated by
+high-resource European languages, which means their shared subword vocabularies
+may not adequately represent Bantu morphology.
+We flag these structural limitations as important context when interpreting
+our results, and we note that performance differences between languages in
+our study likely reflect data constraints as much as anything linguistic.
+
 % ──────────────────────────────────────────────────────────────────────────────
 \section{Methodology}
 
@@ -243,6 +266,17 @@ dialectal variation expected in social-media-sourced annotations.
 No cross-lingual alignment was applied; we rely on the models' shared
 multilingual subword vocabulary as the sole inter-language bridge.
 
+\paragraph{Responsible NLP.}
+BRIGHTER is a publicly released research dataset and we do not use any
+proprietary, personally identifiable, or copyrighted material.
+Using the development split as training data for isiZulu and isiXhosa is a
+deliberate compromise to use all available labelled data; we acknowledge that
+this blurs the train--validation boundary and may underestimate what a proper
+training partition would achieve.
+Class imbalance was addressed through inverse-frequency weighting rather than
+discarding samples, so that all available training signal for minority emotion
+classes is preserved.
+
 \subsection{Preprocessing}
 
 Text is used without stemming or lemmatisation, preserving morphological
@@ -257,7 +291,8 @@ mBERT; SentencePiece for XLM-R) with maximum sequence length 128.
 \paragraph{TF-IDF Baseline.}
 A TF-IDF vectoriser (maximum 5{,}000 features, unigrams and bigrams,
 minimum document frequency 2) feeds a One-vs-Rest Logistic Regression
-classifier (\texttt{class\_weight=``balanced''}, \texttt{max\_iter=1000}).
+classifier (\texttt{class\_weight=``balanced''}, \texttt{max\_iter=1000})
+\citep{scikit-learn}.
 The \texttt{balanced} weighting compensates for label imbalance by inversely
 weighting class frequencies.
 
@@ -273,8 +308,10 @@ head and loss configuration to mBERT, enabling direct comparison.
 
 \subsection{Training and Evaluation Setup}
 
-All transformer models are trained under identical, controlled conditions
-to ensure fair comparison: 3 epochs, learning rate $2 \times 10^{-5}$,
+All transformer models are fine-tuned using the HuggingFace Transformers
+library \citep{wolf-etal-2020-transformers} under identical, controlled
+conditions to ensure fair comparison: 3 epochs, learning rate
+$2 \times 10^{-5}$,
 batch size 8, weight decay 0.01, seed 42.
 At inference, logits are converted to probabilities via sigmoid and binarised
 at threshold $\tau = 0.3$---a value lower than the standard 0.5 to improve
