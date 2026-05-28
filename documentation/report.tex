@@ -489,12 +489,12 @@ Transformer fine-tuning was conducted on CPU, severely limiting feasible
 configurations; initial experiments with one epoch and batch size 2 collapsed
 to all-zero predictions until increasing to 3 epochs, batch size 8, and
 threshold 0.3.
+Concrete extensions addressing these limitations are discussed in Section~6.
 
 \subsection{Responsible AI Principles}
 
 \paragraph{Data openness.}
-All datasets used (BRIGHTER) are publicly available research datasets, and
-all code and model artefacts for this project are version-controlled.
+BRIGHTER and all project code are publicly available and version-controlled.
 
 \paragraph{Fairness across languages.}
 The controlled selection of Bantu languages was an intentional choice to study
@@ -552,7 +552,7 @@ cross-lingual projection from Swahili to isiZulu and isiXhosa,
 fine-tuning AfroXLMR \citep{alabi2022adapting} which is better adapted
 for Bantu morphology, and per-class threshold tuning to improve the
 precision--recall balance on rare emotions.
-Including the EthioEmo dataset for Amharic would additionally test
+Including Amharic emotion data would additionally test
 whether genealogical relatedness aids transfer beyond data availability.
 
 % ──────────────────────────────────────────────────────────────────────────────
