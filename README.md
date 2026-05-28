@@ -90,13 +90,15 @@ Full results and discussion: [`documentation/Group12_Report.pdf`](documentation/
 
 ## Installation
 
-Requires **Python 3.9+**.
+Requires **Python 3.9+**. It is recommended to use a virtual environment:
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> **Note:** Run all commands from the project root directory.
+> **Note:** Run all commands from the project root directory with the virtual environment active.
 
 ---
 
