@@ -34,8 +34,10 @@ We compare a TF-IDF with One-vs-Rest Logistic Regression baseline against
 two multilingual transformer models, mBERT \citep{devlin2019bert} and
 XLM-R \citep{conneau2020unsupervised}, for classifying six emotion categories
 (anger, disgust, fear, joy, sadness, surprise).
-The baseline achieves a macro F1 of 0.25--0.27 across languages, establishing
-a lower bound for the task.
+The baseline achieves macro F1 of 0.25--0.27 across languages; somewhat
+unexpectedly, both transformer models fall below this on macro F1 across all
+three languages, suggesting that data volume rather than model complexity is
+the primary bottleneck in this setting.
 We document substantial class imbalance---particularly for disgust and fear---as
 a key challenge, and analyse cross-lingual differences in model behaviour.
 Our work contributes a reproducible multi-label emotion pipeline for low-resource
@@ -72,14 +74,31 @@ Bantu languages---isiZulu (\textit{zul}), isiXhosa (\textit{xho}), and
 Swahili (\textit{swa})---to investigate whether intra-family linguistic
 relatedness influences the efficacy of multilingual pre-trained models.
 
+\paragraph{Problem Statement.}
+The core challenge we address is whether multilingual pre-trained models can
+classify emotions in Bantu languages when labelled training data is very
+limited and class imbalance is severe.
+These languages are morphologically complex and largely absent from transformer
+pre-training corpora, so it is not obvious that fine-tuning on a few hundred
+examples will outperform a simpler bag-of-words approach.
+Understanding when large models fail in genuinely low-resource settings is
+important for deciding how to invest in NLP tooling for underserved African
+language communities.
+
 \paragraph{Research Questions.}
 \begin{enumerate}[noitemsep]
-  \item How do multilingual transformer models (mBERT, XLM-R) compare to a
-        TF-IDF baseline for multi-label emotion classification in Bantu languages?
-  \item How does performance vary across isiZulu, isiXhosa, and Swahili, and
-        what role does available training data play?
-  \item What common prediction errors arise, and what do they reveal about
-        class imbalance and model limitations?
+  \item \textit{Model comparison:} How do multilingual transformer models
+        (mBERT, XLM-R) compare to a TF-IDF baseline for multi-label emotion
+        classification in Bantu languages, and does per-label class weighting
+        improve recall on rare emotion categories?
+  \item \textit{Cross-lingual variation:} How does performance vary across
+        isiZulu, isiXhosa, and Swahili, and does having a proper training
+        split (as Swahili does) make a meaningful difference compared to
+        using the development set as a training surrogate?
+  \item \textit{Error patterns:} What kinds of prediction errors are most
+        common, which emotion classes are systematically hardest to predict,
+        and what do these patterns reveal about model behaviour under
+        severe data scarcity and class imbalance?
 \end{enumerate}
 
 \paragraph{Responsible NLP.}
@@ -108,6 +127,9 @@ larger and more diverse pre-training corpus (2.5 TB of filtered Common Crawl
 text across 100 languages), making it particularly effective for low-resource
 settings.
 Both models represent the current standard for cross-lingual NLP transfer.
+mBERT in particular has shown strong zero-shot transfer even to languages not
+explicitly represented during pre-training, which is why it remains a common
+first choice when evaluating new low-resource languages \citep{devlin2019bert}.
 However, neither was pre-trained with explicit coverage of Bantu morphological
 structure, and their shared subword vocabularies may segment agglutinative
 forms in ways that obscure linguistically meaningful boundaries---a gap
@@ -119,6 +141,9 @@ Sentiment and emotion analysis for African languages has grown substantially
 with the introduction of benchmarks such as AfriSenti
 \citep{muhammad2023afrisenti}, a multilingual Twitter sentiment dataset, and
 MasakhaNER \citep{adelani2022masakhaner} for named entity recognition.
+A key quality of both benchmarks is that they use native-speaker annotations,
+which matters for emotion tasks where cultural and linguistic context strongly
+influences label interpretation---a standard that BRIGHTER also follows.
 \citet{mabokela2024explainable} demonstrated that pre-trained language models
 substantially outperform classical approaches for low-resource African language
 sentiment, while \citet{thangaraj2024crosslingual} found that XLM-R
@@ -148,6 +173,10 @@ annotations across 32 languages, with annotations sourced from fluent speakers.
 The dataset includes six emotion categories---anger, disgust, fear, joy,
 sadness, and surprise---encoded as binary label vectors, making it directly
 applicable to multi-label classification.
+The use of fluent native speakers for annotation is a particular strength:
+many multilingual datasets rely on translation or non-native annotators, which
+can introduce noise especially for culturally variable emotions like disgust
+and fear.
 
 \paragraph{Gap.}
 Prior work has focused on broad cross-continental transfer without exploiting
@@ -257,6 +286,15 @@ to class imbalance.
 Supplementary metrics include micro F1, macro precision, macro recall,
 Hamming loss, and macro Jaccard score.
 
+\paragraph{Error analysis methodology.}
+To directly address RQ3, we manually inspect test-set predictions and
+categorise errors as: false negatives (model predicts nothing despite a
+positive ground-truth label), over-predictions (model predicts a label
+absent from the ground truth), or partial matches (some labels correct,
+others missed or spurious).
+We additionally flag any per-class F1 below 0.15 as a \textit{weak label},
+indicating a systematic failure to learn that emotion class.
+
 % ──────────────────────────────────────────────────────────────────────────────
 \section{Experiments and Results}
 
@@ -362,6 +400,17 @@ transformer models across all three languages under these data constraints,
 highlighting the challenge of deploying large pretrained transformers in
 genuinely low-resource settings without dedicated hyperparameter tuning
 per language.
+This is worth contextualising against prior literature.
+\citet{mabokela2024explainable} generally find that pre-trained models
+outperform classical approaches for African language tasks, but those
+experiments typically involve thousands of training examples.
+We think the key difference here is data scale: with fewer than 900 samples
+for isiZulu and isiXhosa, the transformers simply do not have enough signal
+to recover from the class imbalance, even with weighted loss.
+This also sits within the pattern described by \citet{thangaraj2024crosslingual},
+who note that XLM-R's advantage over mBERT is most visible when there is
+enough training data to support the larger model---a threshold we clearly
+did not reach for the two languages without official training splits.
 
 \subsection{Weak Label Analysis}
 
@@ -454,6 +503,14 @@ not eliminate---the effect of class imbalance.
 The modular pipeline architecture allows baseline and transformer experiments
 to share the same data loading and evaluation utilities, ensuring comparability.
 
+We were also glad to find that class weighting prevented total collapse to
+majority-class predictions.
+In early experiments without \texttt{pos\_weight}, the transformer models
+just predicted all-zeros on minority classes, which made evaluation
+meaningless.
+Getting the weighting right---even though it hurt precision---was a necessary
+step to produce interpretable results across all six emotion classes.
+
 \subsection{Challenges}
 
 \paragraph{Limited training data.}
@@ -539,7 +596,7 @@ mBERT (178M parameters) achieves macro F1 of 0.177 (isiZulu) and 0.240
 confirming that the larger model is more data-hungry in low-resource conditions.
 Both models substantially improve recall over the baseline (mBERT recall: 0.530--0.769
 vs.\ baseline 0.290--0.321), but at the cost of precision, reflecting the
-pos\_weight trade-off between sensitivity and specificity.
+\texttt{pos\_weight} trade-off between sensitivity and specificity.
 For Swahili (3{,}307 training examples), XLM-R (F1 = 0.223) narrows the gap
 with mBERT (F1 = 0.193), consistent with XLM-R benefiting more from larger
 training sets.
@@ -547,10 +604,21 @@ training sets.
 These findings underscore that data volume is the primary bottleneck for
 emotion analysis in low-resource Bantu languages, and that larger pretrained
 models are not automatically superior when training data is scarce.
-Future work should investigate data augmentation, AfroXLMR
-\citep{alabi2022adapting}, and cross-lingual transfer from richer
-corpora to address the fundamental data scarcity that constrains all
-models evaluated in this setting.
+Future work should explore several concrete directions.
+Data augmentation---for example, back-translating training examples through
+English, or projecting labelled data from Swahili into isiZulu and isiXhosa
+via cross-lingual transfer---would directly target the training data shortage
+that constrained all our models.
+Fine-tuning AfroXLMR \citep{alabi2022adapting}, which was specifically adapted
+for African languages, is the most logical next model to test; it likely
+handles Bantu morphology better than generic mBERT and XLM-R.
+Per-class threshold tuning rather than a fixed $\tau = 0.3$ for all labels
+could also improve the precision--recall trade-off we observed, particularly
+for rare emotions like disgust and fear.
+Finally, including the EthioEmo dataset for Amharic would allow a controlled
+comparison between Bantu and non-Bantu African languages, directly testing
+whether genealogical relatedness aids cross-lingual transfer beyond what
+data availability alone can explain.
 
 % ──────────────────────────────────────────────────────────────────────────────
 \bibliography{custom}
