@@ -87,30 +87,21 @@ language communities.
 
 \paragraph{Research Questions.}
 \begin{enumerate}[noitemsep]
-  \item \textit{Model comparison:} How do multilingual transformer models
-        (mBERT, XLM-R) compare to a TF-IDF baseline for multi-label emotion
-        classification in Bantu languages, and does per-label class weighting
-        improve recall on rare emotion categories?
-  \item \textit{Cross-lingual variation:} How does performance vary across
-        isiZulu, isiXhosa, and Swahili, and does having a proper training
-        split (as Swahili does) make a meaningful difference compared to
-        using the development set as a training surrogate?
-  \item \textit{Error patterns:} What kinds of prediction errors are most
-        common, which emotion classes are systematically hardest to predict,
-        and what do these patterns reveal about model behaviour under
-        severe data scarcity and class imbalance?
+  \item How do mBERT and XLM-R compare to a TF-IDF baseline for multi-label
+        emotion classification in Bantu languages, and does per-label class
+        weighting improve minority-class recall?
+  \item How does performance vary across the three languages, and does the
+        absence of an official training split for isiZulu and isiXhosa
+        measurably harm performance relative to Swahili?
+  \item What prediction error patterns arise, and what do they reveal about
+        model behaviour under class imbalance and data scarcity?
 \end{enumerate}
 
 \paragraph{Contributions.}
-The main contributions of this work are:
-(1) a reproducible multi-label emotion classification pipeline for three Bantu
-languages that can serve as a reference implementation for future work;
-(2) a systematic comparison of TF-IDF and two multilingual transformer models
-under matched, controlled evaluation conditions across three low-resource
-languages; and
-(3) an analysis of class imbalance effects, error patterns, and cross-lingual
-performance variation that provides practical insights for NLP development
-targeting underrepresented African languages.
+We contribute: (1) a reproducible emotion classification pipeline for three
+Bantu languages; (2) a controlled TF-IDF vs.\ transformer comparison under
+matched conditions; and (3) analysis of class imbalance effects, error
+patterns, and cross-lingual variation in a low-resource setting.
 
 \paragraph{Responsible NLP.}
 This work directly addresses language underrepresentation.
@@ -118,11 +109,8 @@ By building and evaluating pipelines for Bantu languages, we contribute
 towards more equitable NLP---recognising that technological inclusion requires
 dedicated effort for low-resource communities.
 \paragraph{Paper structure.}
-Section~2 surveys background and related work.
-Section~3 describes the data, models, and evaluation setup.
-Section~4 presents experimental results and analysis.
-Section~5 reflects on challenges and broader implications.
-Section~6 concludes with directions for future work.
+Sections~2--5 cover background, methodology, results, and reflections;
+Section~6 concludes.
 % ──────────────────────────────────────────────────────────────────────────────
 \section{Background}
 
@@ -200,16 +188,10 @@ Amharic coverage but was not included in experiments due to data availability
 constraints; we note this as a limitation and direction for future work.
 
 \paragraph{Responsible NLP.}
-A recurring concern in African language NLP is that research priorities are
-often shaped by data availability rather than community need, and the
-languages covered by benchmarks reflect where annotation was most feasible
-rather than where NLP support is most urgently needed.
-The pre-training corpora for mBERT and XLM-R are also heavily dominated by
-high-resource European languages, which means their shared subword vocabularies
-may not adequately represent Bantu morphology.
-We flag these structural limitations as important context when interpreting
-our results, and we note that performance differences between languages in
-our study likely reflect data constraints as much as anything linguistic.
+Research priorities in African language NLP are often shaped by data
+availability rather than community need; pre-training corpora for mBERT and
+XLM-R heavily favour high-resource European languages, which may limit their
+coverage of Bantu morphology---a constraint we acknowledge throughout.
 
 % ──────────────────────────────────────────────────────────────────────────────
 \section{Methodology}
@@ -249,33 +231,21 @@ isiZulu shows moderate imbalance (7.2:1), and Swahili's most severe case is
 \textit{fear} at 2.8\% of labels (93 samples, ratio 5.8:1).
 
 \paragraph{Exploratory data analysis.}
-In low-resource settings, careful exploratory analysis is essential: limited
-data make understanding each sample's structure critical before modelling
-\citep{abdulmumin2024brighter}.
-Character-level inspection reveals that Swahili text is predominantly
-ASCII-compatible, while isiZulu and isiXhosa encode click consonants via
-digraphs (\textit{hl}, \textit{xh}, \textit{gc}, \textit{nhl}) and phonemic
-modifier letters.
-Tokenisation analysis shows that mBERT and XLM-R frequently split these
-digraphs into sub-word units that do not align with phonemic boundaries---a
-tokenisation challenge inherent to applying models without dedicated Bantu
-language coverage.
-Minor script inconsistencies (e.g.\ inconsistent apostrophe characters for
-click consonants in isiXhosa) were also observed, consistent with the
-dialectal variation expected in social-media-sourced annotations.
-No cross-lingual alignment was applied; we rely on the models' shared
-multilingual subword vocabulary as the sole inter-language bridge.
+Swahili text is predominantly ASCII-compatible; isiZulu and isiXhosa encode
+click consonants via digraphs (\textit{hl}, \textit{xh}, \textit{gc}) that
+mBERT and XLM-R tokenisers frequently split across sub-word boundaries, losing
+morphologically significant information.
+Minor script inconsistencies in isiXhosa (e.g.\ inconsistent apostrophe usage
+for clicks) reflect dialectal variation in the social-media source text.
+No cross-lingual alignment was applied; we rely on the shared multilingual
+subword vocabulary as the sole inter-language bridge.
 
 \paragraph{Responsible NLP.}
-BRIGHTER is a publicly released research dataset and we do not use any
-proprietary, personally identifiable, or copyrighted material.
-Using the development split as training data for isiZulu and isiXhosa is a
-deliberate compromise to use all available labelled data; we acknowledge that
-this blurs the train--validation boundary and may underestimate what a proper
-training partition would achieve.
-Class imbalance was addressed through inverse-frequency weighting rather than
-discarding samples, so that all available training signal for minority emotion
-classes is preserved.
+BRIGHTER is publicly released; no proprietary or personal data is used.
+Using the development split as training data blurs the train--validation
+boundary and likely underestimates achievable results; class imbalance was
+handled via inverse-frequency weighting to preserve all available training
+signal.
 
 \subsection{Preprocessing}
 
@@ -437,17 +407,11 @@ transformer models across all three languages under these data constraints,
 highlighting the challenge of deploying large pretrained transformers in
 genuinely low-resource settings without dedicated hyperparameter tuning
 per language.
-This is worth contextualising against prior literature.
-\citet{mabokela2024explainable} generally find that pre-trained models
-outperform classical approaches for African language tasks, but those
-experiments typically involve thousands of training examples.
-We think the key difference here is data scale: with fewer than 900 samples
-for isiZulu and isiXhosa, the transformers simply do not have enough signal
-to recover from the class imbalance, even with weighted loss.
-This also sits within the pattern described by \citet{thangaraj2024crosslingual},
-who note that XLM-R's advantage over mBERT is most visible when there is
-enough training data to support the larger model---a threshold we clearly
-did not reach for the two languages without official training splits.
+This appears to contradict \citet{mabokela2024explainable}'s finding that
+pre-trained models outperform classical methods, but those experiments use
+thousands of training examples; our sub-900-sample constraint eliminates the
+transformer advantage, consistent with \citet{thangaraj2024crosslingual}'s
+note that XLM-R's gains require sufficient data to materialise.
 
 \subsection{Weak Label Analysis}
 
@@ -515,17 +479,12 @@ disadvantage for underrepresented emotion categories, and that evaluation
 must be disaggregated per label.
 
 \paragraph{Answers to research questions.}
-Returning to the research questions posed in Section~1:
-(RQ1) the TF-IDF baseline outperforms both fine-tuned transformer models on
-macro F1 across all three languages, demonstrating that larger pre-trained
-models are not automatically superior under genuine data scarcity;
-(RQ2) performance variation is driven primarily by training data volume and
-class distribution rather than linguistic distance---Swahili's larger corpus
-yields more balanced precision--recall trade-offs, while isiZulu and isiXhosa
-suffer disproportionately from the absence of official training splits;
-(RQ3) false negatives are the dominant error type across all languages,
-arising from class sparsity that prevents meaningful decision boundaries for
-rare emotions such as disgust and fear.
+(RQ1) TF-IDF outperforms both transformers on macro F1, showing large models
+are not automatically superior under data scarcity.
+(RQ2) Performance tracks data volume rather than linguistic distance:
+Swahili's larger corpus yields better precision--recall trade-offs;
+isiZulu and isiXhosa suffer most from lacking official training splits.
+(RQ3) False negatives dominate, driven by class sparsity on rare emotions.
 
 % ──────────────────────────────────────────────────────────────────────────────
 \section{Reflections and Discussion}
@@ -540,13 +499,9 @@ not eliminate---the effect of class imbalance.
 The modular pipeline architecture allows baseline and transformer experiments
 to share the same data loading and evaluation utilities, ensuring comparability.
 
-We were also glad to find that class weighting prevented total collapse to
-majority-class predictions.
-In early experiments without \texttt{pos\_weight}, the transformer models
-just predicted all-zeros on minority classes, which made evaluation
-meaningless.
-Getting the weighting right---even though it hurt precision---was a necessary
-step to produce interpretable results across all six emotion classes.
+We were also glad to find that class weighting was critical: without
+\texttt{pos\_weight}, transformer models collapsed to all-zero predictions
+on minority classes, making results uninterpretable.
 
 \subsection{Challenges}
 
@@ -572,14 +527,6 @@ in training collapse (all-zero predictions), likely due to insufficient gradient
 signal before convergence.
 Increasing training to 3 epochs, batch size 8, and lowering the classification
 threshold to 0.3 addressed this failure mode.
-
-\paragraph{EthioEmo.}
-The proposal identified the EthioEmo dataset as a potential Amharic language
-complement to the Bantu languages in BRIGHTER.
-Due to data availability and time constraints, EthioEmo was not incorporated
-into the final experiments.
-Including Amharic as a non-Bantu African language reference point remains a
-clear direction for future work.
 
 \subsection{Responsible AI Principles}
 
