@@ -139,8 +139,8 @@ Both use native-speaker annotations---important where cultural context shapes
 label interpretation---a standard BRIGHTER also follows.
 \citet{mabokela2024explainable} demonstrated that pre-trained language models
 substantially outperform classical approaches for low-resource African language
-sentiment, while \citet{thangaraj2024crosslingual} found that XLM-R
-consistently outperforms mBERT on cross-lingual transfer for African languages.
+sentiment, while \citet{thangaraj2024crosslingual} show that fine-tuned multilingual
+models achieve strong cross-lingual transfer between related low-resource Bantu languages.
 However, these studies focus on single-label sentiment or sequence-level tasks;
 multi-label emotion classification under severe data constraints (fewer than
 900 training examples) has received little systematic attention for Bantu
@@ -385,8 +385,8 @@ per language.
 This appears to contradict \citet{mabokela2024explainable}'s finding that
 pre-trained models outperform classical methods, but those experiments use
 thousands of training examples; our sub-900-sample constraint eliminates the
-transformer advantage, consistent with \citet{thangaraj2024crosslingual}'s
-note that XLM-R's gains require sufficient data to materialise.
+transformer advantage, consistent with \citet{thangaraj2024crosslingual}'s finding that multilingual
+models require fine-tuning to realise cross-lingual gains in low-resource settings.
 
 \subsection{Weak Label Analysis}
 
