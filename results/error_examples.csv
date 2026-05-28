@@ -1,0 +1,28 @@
+language,text,true_labels,predicted_labels,error_type,notes
+zul,#kznsopa: uzikalala ukhathazekile ngesimo somnotho,sadness,[none],false_negative,No prediction despite ground truth labels
+zul,isitimela sibashumpule amakhanda,sadness,[none],false_negative,No prediction despite ground truth labels
+zul,kushaywe abasolwa ngokugqekeza,anger,[none],false_negative,No prediction despite ground truth labels
+zul,kusolwa isibhaxu emaphoyiseni bengadli,[none],"sadness, surprise",over_prediction,Predicted 2 vs true 0
+zul,ibhange lombuso litakula abadlelwe imali yivbs,[none],"disgust, sadness",over_prediction,Predicted 2 vs true 0
+zul,ithuba lokuhlomula ngemisiko   ka-ayanda kubafundi bakamatric,[none],"anger, joy",over_prediction,Predicted 2 vs true 0
+zul,wethuka izanya umndeni wentombazane (14) ebulewe,"sadness, surprise","disgust, fear, sadness",partial_match,"Some labels correct, others missed or added"
+zul,kutholwe isidumbu somhlengikazi sesonakele,"disgust, sadness, surprise","disgust, sadness",partial_match,"Some labels correct, others missed or added"
+zul,kuboshwe umphrofethi 'oqole' uthisha ur319 000,surprise,"anger, surprise",partial_match,"Some labels correct, others missed or added"
+xho,"‘basela utywala empekweni, beqhathana ngathi’",anger,[none],false_negative,No prediction despite ground truth labels
+xho,uzidane akaqinisekanga ngekamva lakhe,"fear, sadness",[none],false_negative,No prediction despite ground truth labels
+xho,igqala lomsasazi libuyele kunomathotholo!,joy,[none],false_negative,No prediction despite ground truth labels
+xho,kuya kusenyukela zizithwakumbe zokubhubha komtu emzantsi afrika! | ec indab,sadness,"disgust, fear, sadness",over_prediction,Predicted 3 vs true 1
+xho,izakuthengiswa echina iavocado yomzantsi afrika,joy,"anger, fear, joy",over_prediction,Predicted 3 vs true 1
+xho,ufunyenwe unqunyulwe isinqa umzimba wenina lasemaclear | ec indab,sadness,"disgust, sadness, surprise",over_prediction,Predicted 3 vs true 1
+xho,uyalelwe ibheyile umfundisi otyholwa ngokudlwengula umntwana,sadness,"anger, sadness",partial_match,"Some labels correct, others missed or added"
+xho,kuthandazelwa abafundi bebanga leshumi,joy,"joy, surprise",partial_match,"Some labels correct, others missed or added"
+xho,izakugwetyelwa ukubulala umntana wayo onenyanga eziyi14 indoda yasekhayelitsha,sadness,"sadness, surprise",partial_match,"Some labels correct, others missed or added"
+swa,wadau ni kama na waste time mlisema talking stage inafaa kutake how long??,fear,[none],false_negative,No prediction despite ground truth labels
+swa,ndio tuko kwa nyaugenya enroute nairobi cbd,surprise,[none],false_negative,No prediction despite ground truth labels
+swa,karata ya siasa ya kenya wanakuwaga waneipanga kweli. eh!,anger,[none],false_negative,No prediction despite ground truth labels
+swa,"and on a serious, ni sancho pekee tunadai ama yeye ndiye heading hao wengine ni sub headings",[none],"disgust, surprise",over_prediction,Predicted 2 vs true 0
+swa,uyu super marcus anafaa awe  football commentator sasa,[none],"anger, joy",over_prediction,Predicted 2 vs true 0
+swa,there's an age mtu hufika then unanza kuona vitu zingine ni ufala ulikuwanga unafanya,[none],"disgust, joy, surprise",over_prediction,Predicted 3 vs true 0
+swa,kikuyu people huwa mna survive aje ...hiyo baridi yote 🌬,surprise,"anger, disgust, surprise",partial_match,"Some labels correct, others missed or added"
+swa,"huyu mtu alidunga hawa watoto hii shindano, hakuna kitu alifanyiwa? fuck man",anger,"anger, surprise",partial_match,"Some labels correct, others missed or added"
+swa,waaah sasa huku ni wapi na nilikua nimebuy sukuma naenda kupika 😭😭😭😭,sadness,"sadness, surprise",partial_match,"Some labels correct, others missed or added"

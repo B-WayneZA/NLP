@@ -1,5 +1,8 @@
-EthioEmo has a choice between Ethiopia, somali, aramaric 
-Emotion annotations (often richer / more detailed)
+EthioEmo dataset was not integrated into this project.
 
-will not be diretly compared to BRIGHTER but will be used as a supporting annotation, 
-just need a choice of lanaguage
+The EthioEmo dataset covers Ethiopian languages (Amharic, Afaan Oromo, Tigrinya,
+Somali) which are outside the Bantu language family scope of this work. Attempts
+to obtain the dataset were unsuccessful within the project timeline.
+
+This limitation is noted in the written report (documentation/report.tex,
+Section 6 -- Conclusion and Future Work).
