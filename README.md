@@ -28,7 +28,7 @@ for **multi-label emotion classification** in three Bantu languages using the
 > Transformers achieve substantially higher recall (0.53–0.77 vs 0.29–0.32 baseline)
 > thanks to per-label positive-class weighting (`pos_weight`).
 
-Full results and discussion: [`documentation/report.tex`](documentation/report.tex)
+Full results and discussion: [`documentation/Group12_Report.pdf`](documentation/Group12_Report.pdf)
 
 ---
 
@@ -82,9 +82,10 @@ Full results and discussion: [`documentation/report.tex`](documentation/report.t
 │       └── swa_baseline.pkl
 │
 └── documentation/
-    ├── report.tex                   # Full project report (ACL format)
-    ├── acl.sty                      # ACL style file
-    └── custom.bib                   # Bibliography (8 entries)
+    ├── Group12_Report.pdf           # Compiled final report (ACL format)
+    ├── Project Template_ African Languages for Emotion Analysis.docx
+    │                                # Original project template / brief
+    └── Proposal Idea.docx           # Research proposal submitted earlier
 ```
 
 ---
