@@ -128,4 +128,4 @@ venv.bak/
 !requirements.txt
 !paper_tables.txt
 !BASELINE.readme.md
-!baseline_observations.md
+!baseline_observations.md**/.DS_Store
