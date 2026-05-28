@@ -246,8 +246,8 @@ def main():
     
     print("\n✅ Baseline execution complete.\n")
     
-    # Return for use in exploratory analysis
-    return all_results, emotion_index
+    # Return for use in exploratory analysis (datasets included to avoid double load)
+    return all_results, emotion_index, datasets
 
 
 if __name__ == "__main__":

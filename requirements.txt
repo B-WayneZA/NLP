@@ -1,9 +1,8 @@
-pandas 
-scikit-learn 
-datasets 
-transformers 
-numpy 
-matplotlib
-torch
-transformers
-pyarrow
+pandas>=1.5
+scikit-learn>=1.0
+datasets>=2.0
+transformers>=4.40.0
+numpy>=1.24
+matplotlib>=3.5
+torch>=2.0.0
+pyarrow>=10.0

@@ -14,25 +14,29 @@ Trained and evaluated separately for **isiZulu (zul)**, **isiXhosa (xho)**, and 
 
 ```
 .
-├── data/                          # Dataset directory
-│   ├── zul/
-│   │   ├── dev.parquet
-│   │   └── test.parquet
-│   ├── xho/
-│   │   ├── dev.parquet
-│   │   └── test.parquet
-│   └── swa/
-│       ├── train.parquet
-│       ├── dev.parquet
-│       └── test.parquet
+├── data/                          # Dataset directory (BRIGHTER parquet files)
+│   ├── BRIGHTER/
+│   │   ├── zul/
+│   │   │   ├── dev.parquet
+│   │   │   └── test.parquet
+│   │   ├── xho/
+│   │   │   ├── dev.parquet
+│   │   │   └── test.parquet
+│   │   └── swa/
+│   │       ├── train.parquet
+│   │       ├── dev.parquet
+│   │       └── test.parquet
 │
-├── dataset_loader.py              # W2-01 to W2-03: Data validation & standardisation
 ├── src/
-│   ├── baseline.py                # Main baseline training script
-│   └── metrics.py                 # Multi-label evaluation metrics
+│   ├── data/
+│   │   └── dataset_loader.py      # Data validation & standardisation
+│   ├── baseline/
+│   │   ├── model.py               # BaselineModel class (TF-IDF + OvR LogReg)
+│   │   └── run_baseline.py        # Training entry point
+│   └── metrics.py             # Multi-label evaluation metrics
 │
 ├── results/
-│   └── baseline_metrics.csv       # Output: per-language metrics
+│   └── baseline_metrics.csv   # Output: per-language metrics
 │
 └── models/
     └── baseline/
@@ -57,11 +61,11 @@ pip install pandas numpy scikit-learn pyarrow
 
 ```bash
 cd /path/to/project
-python src/baseline.py
+python src/baseline/run_baseline.py
 ```
 
 This will:
-1. Load and standardise datasets using `dataset_loader.py`
+1. Load and standardise datasets using `src/data/dataset_loader.py`
 2. Train TF-IDF + Logistic Regression for each language
 3. Evaluate on test sets
 4. Save results to `results/baseline_metrics.csv`

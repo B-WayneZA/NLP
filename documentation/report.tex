@@ -257,23 +257,24 @@ Swahili  & 0.247 & 0.293 & 0.214 & 0.298 \\
 Tables~\ref{tab:mbert} and~\ref{tab:xlmr} report fine-tuned mBERT and
 XLM-R performance.
 
-The mBERT results reveal a strong training-data dependence.
-isiXhosa (682 training samples) achieves macro F1 of 0.244 with mBERT,
-broadly comparable to its TF-IDF baseline (0.265), while micro F1 improves
-markedly from 0.471 to 0.536 --- indicating better calibration on frequent
-classes.
-isiZulu (875 training samples) shows lower macro F1 with mBERT (0.082)
-than the TF-IDF baseline (0.257), suggesting that the transformer's
-inductive biases are harder to activate with fewer than ~900 labelled examples
-in a multi-label setting.
-We attribute this result partly to the data constraint and partly to the
-severe sparsity of the minority emotion classes (disgust at 2.9\%,
+The mBERT results, fine-tuned with per-label positive-class weighting
+(\texttt{pos\_weight}), show improved recall on minority classes compared
+to the unweighted configuration.
+isiXhosa (682 training samples) achieves macro F1 of 0.240, broadly
+comparable to its TF-IDF baseline (0.265), while recall improves markedly
+from 0.321 to 0.530 --- indicating that class weighting successfully
+pushes predictions towards minority labels.
+isiZulu (875 training samples) achieves macro F1 of 0.177, below the
+TF-IDF baseline (0.257), but recall rises from 0.290 to 0.560,
+confirming that \texttt{pos\_weight} addresses the all-zeros collapse
+observed without weighting.
+We attribute the remaining macro F1 gap to the data constraint and
+the severe sparsity of minority emotion classes (disgust at 2.9\%,
 fear at 3.1\% of isiZulu training labels).
 Swahili, with the largest training set (3{,}307 examples), achieves macro
-F1 of 0.145 --- slightly better than isiZulu but still below its TF-IDF
-baseline of 0.248.  The high precision (0.254) relative to recall (0.153)
-suggests the model is conservative, only predicting emotions when it is
-confident, which suppresses recall on minority classes.
+F1 of 0.193 --- still below its TF-IDF baseline of 0.248, but with
+recall of 0.769, reflecting the weighted loss effectively promoting
+minority-class predictions at the cost of precision (0.112).
 
 \begin{table}[h]
 \centering
@@ -283,9 +284,9 @@ confident, which suppresses recall on minority classes.
 \textbf{Language} & \textbf{F1-mac} & \textbf{F1-mic} & \textbf{Prec-mac} &
   \textbf{Rec-mac} \\
 \midrule
-isiZulu  & 0.082 & 0.320 & 0.065 & 0.109 \\
-isiXhosa & 0.244 & 0.536 & 0.213 & 0.291 \\
-Swahili  & 0.145 & 0.287 & 0.254 & 0.153 \\
+isiZulu  & 0.177 & 0.259 & 0.124 & 0.560 \\
+isiXhosa & 0.240 & 0.440 & 0.159 & 0.530 \\
+Swahili  & 0.193 & 0.232 & 0.112 & 0.769 \\
 \bottomrule
 \end{tabular}
 \caption{mBERT fine-tuning results (3 epochs, batch 8, $\tau{=}0.3$).}
@@ -300,26 +301,27 @@ Swahili  & 0.145 & 0.287 & 0.254 & 0.153 \\
 \textbf{Language} & \textbf{F1-mac} & \textbf{F1-mic} & \textbf{Prec-mac} &
   \textbf{Rec-mac} \\
 \midrule
-isiZulu  & 0.000 & 0.000 & 0.000 & 0.000 \\
-isiXhosa & 0.170 & 0.486 & 0.146 & 0.235 \\
-Swahili  & 0.184 & 0.332 & 0.235 & 0.188 \\
+isiZulu  & 0.135 & 0.218 & 0.079 & 0.547 \\
+isiXhosa & 0.222 & 0.447 & 0.147 & 0.500 \\
+Swahili  & 0.223 & 0.249 & 0.136 & 0.765 \\
 \bottomrule
 \end{tabular}
 \caption{XLM-R fine-tuning results (3 epochs, batch 8, $\tau{=}0.3$).}
 \label{tab:xlmr}
 \end{table}
 
-XLM-R produces a different pattern than mBERT.
-For isiZulu (875 samples), XLM-R collapses to all-zero predictions at every
-threshold, whereas mBERT at least achieves macro F1 of 0.082.
-XLM-R has 278M parameters vs.\ mBERT's 178M, making it more data-hungry
-to fine-tune; with under 900 labelled examples the model cannot escape
-a degenerate zero-prediction solution.
-For isiXhosa (682 samples), XLM-R achieves macro F1 of 0.170, lower than
-mBERT's 0.244 but with a competitive micro F1 of 0.486.
-The reversal occurs for Swahili: XLM-R (F1 = 0.184) outperforms mBERT
-(F1 = 0.145) when trained on 3{,}307 examples, confirming that XLM-R
-benefits more from additional training data than mBERT does.
+XLM-R, also fine-tuned with per-label class weighting, follows a broadly
+similar pattern to mBERT.
+For isiZulu (875 samples), class weighting prevents the all-zeros collapse
+observed in unweighted runs, yielding macro F1 of 0.135 and recall of
+0.547; it still falls below mBERT (0.177) owing to XLM-R's larger
+parameter count (278M vs.\ mBERT's 178M), which demands more data to
+fine-tune effectively.
+For isiXhosa (682 samples), XLM-R achieves macro F1 of 0.222, slightly
+below mBERT's 0.240, with comparable micro F1 of 0.447.
+For Swahili, XLM-R (F1 = 0.223) narrows the gap with mBERT (F1 = 0.193)
+when trained on 3{,}307 examples, confirming that XLM-R benefits more
+from additional training data.
 Notably, the TF-IDF baseline (F1 = 0.247--0.265) outperforms both
 transformer models across all three languages under these data constraints,
 highlighting the challenge of deploying large pretrained transformers in
@@ -478,18 +480,21 @@ Key findings include: (1) severe class imbalance---particularly for
 \textit{disgust} and \textit{fear}---substantially harms recall on minority
 classes; (2) false negatives are the dominant error type, suggesting
 models default to abstaining rather than over-predicting;
-(3) the TF-IDF baseline outperforms both transformer models on all three
-languages under the data constraints of this study.
+(3) the TF-IDF baseline outperforms both transformer models on macro F1
+across all three languages under the data constraints of this study.
 
-For the transformer experiments, mBERT and XLM-R exhibit complementary
-data-sensitivity profiles.
-mBERT (178M parameters) generalises better in the lowest-data conditions
-(isiZulu: F1 = 0.082; isiXhosa: F1 = 0.244), whereas XLM-R (278M parameters)
-achieves higher macro F1 on Swahili (0.184 vs.\ mBERT's 0.145) once 3{,}307
-training examples are available.
-XLM-R completely fails on isiZulu (F1 = 0.000), predicting no positive
-labels at any threshold---a direct consequence of attempting to fine-tune
-278M parameters on fewer than 900 labelled instances.
+For the transformer experiments, fine-tuned with per-label positive-class
+weighting (\texttt{pos\_weight}) to address minority-class collapse, mBERT and
+XLM-R exhibit complementary data-sensitivity profiles.
+mBERT (178M parameters) achieves macro F1 of 0.177 (isiZulu) and 0.240
+(isiXhosa), while XLM-R (278M parameters) scores 0.135 and 0.222 respectively,
+confirming that the larger model is more data-hungry in low-resource conditions.
+Both models substantially improve recall over the baseline (mBERT recall: 0.530--0.769
+vs.\ baseline 0.290--0.321), but at the cost of precision, reflecting the
+pos\_weight trade-off between sensitivity and specificity.
+For Swahili (3{,}307 training examples), XLM-R (F1 = 0.223) narrows the gap
+with mBERT (F1 = 0.193), consistent with XLM-R benefiting more from larger
+training sets.
 
 These findings underscore that data volume is the primary bottleneck for
 emotion analysis in low-resource Bantu languages, and that larger pretrained

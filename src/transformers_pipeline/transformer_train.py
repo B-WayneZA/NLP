@@ -77,6 +77,52 @@ THRESHOLD    = 0.3
 RESULTS_DIR  = Path("results")
 CHECKPOINTS  = Path("checkpoints")
 RANDOM_STATE = 42
+POS_WEIGHT_CAP = 10.0   # cap per-label weights to keep training stable
+
+
+# ─────────────────────────────────────────────
+# WEIGHTED LOSS
+# ─────────────────────────────────────────────
+
+def compute_pos_weight(train_dataset, num_labels: int) -> torch.Tensor:
+    """
+    Compute per-label positive class weights from the training set.
+
+    pos_weight[i] = n_negative[i] / n_positive[i], capped at POS_WEIGHT_CAP.
+
+    This mirrors sklearn's class_weight='balanced' for multi-label BCE and
+    prevents the model from collapsing to all-zeros on minority labels.
+    """
+    # EmotionDataset stores labels as a numpy array at .labels
+    labels = train_dataset.labels   # (n, num_labels) float32
+    n_pos  = labels.sum(axis=0).clip(min=1)        # avoid division by zero
+    n_neg  = len(labels) - n_pos
+    weights = (n_neg / n_pos).clip(max=POS_WEIGHT_CAP)
+    return torch.tensor(weights, dtype=torch.float32)
+
+
+class WeightedBCETrainer(Trainer):
+    """
+    Trainer subclass that applies per-label pos_weight to BCEWithLogitsLoss.
+
+    Equivalent to class_weight='balanced' in sklearn — upweights rare labels
+    (anger, disgust, fear) so the model does not learn to predict only the
+    dominant class (sadness/joy).
+    """
+
+    def __init__(self, *args, pos_weight: torch.Tensor = None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.pos_weight = pos_weight
+
+    def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
+        labels  = inputs.pop("labels")
+        outputs = model(**inputs)
+        logits  = outputs.logits
+        pw = self.pos_weight.to(logits.device) if self.pos_weight is not None else None
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(
+            logits, labels.float(), pos_weight=pw
+        )
+        return (loss, outputs) if return_outputs else loss
 
 
 # ─────────────────────────────────────────────
@@ -233,14 +279,21 @@ def run_single_experiment(
    if hasattr(training_args, "evaluation_strategy"):
       training_args.evaluation_strategy = strategy
 
-   # Build Trainer
-   trainer = Trainer(
+   # Per-label positive-class weights (mirrors baseline class_weight='balanced')
+   pos_weight = compute_pos_weight(split_data["train"], num_labels=num_labels)
+   print(f"\n  pos_weight per label:")
+   for lbl, w in zip(emotion_index, pos_weight.tolist()):
+      print(f"    {lbl:<10} {w:.2f}")
+
+   # Build Trainer with weighted BCE loss
+   trainer = WeightedBCETrainer(
       model=model,
       args=training_args,
       train_dataset=split_data["train"],
       eval_dataset=split_data["validation"] if has_eval else None,
       compute_metrics=compute_metrics_fn,
       processing_class=tokenizer,
+      pos_weight=pos_weight,
    )
 
    # Train

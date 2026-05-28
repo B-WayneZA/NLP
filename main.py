@@ -41,12 +41,10 @@ def run_week2():
     _banner("WEEK 2: Baseline + Exploratory Analysis")
 
     # Deferred imports — torch not required here
-    from src.data.dataset_loader import run_pipeline
     from src.baseline.run_baseline import main as run_baseline
 
-
-    # We call run_baseline once here, capture the results, then pass them
-    # directly into the analysis functions to avoid running baseline twice.
+    # We call run_baseline once here — it returns datasets to avoid a second
+    # run_pipeline() call inside the exploratory analysis step.
     from src.analysis.exploratory_analysis import (
         identify_weak_labels,
         analyze_class_distribution,
@@ -55,16 +53,12 @@ def run_week2():
         RESULTS_DIR,
     )
 
-    # Step 1 — load data explicitly so failures surface here, not inside baseline
-    print("\n[STEP 1/4] Loading datasets...")
-    datasets, emotion_index = run_pipeline()
+    # Step 1 — baseline (single pass; returns datasets for reuse below)
+    print("\n[STEP 1/3] Running baseline...")
+    all_results, emotion_index, datasets = run_baseline()
 
-    # Step 2 — baseline (single run, results reused in step 3)
-    print("\n[STEP 2/4] Running baseline...")
-    all_results, emotion_index = run_baseline()
-
-    # Step 3 — exploratory analysis using already-computed results
-    print("\n[STEP 3/4] Running exploratory analysis...")
+    # Step 2 — exploratory analysis using already-loaded datasets
+    print("\n[STEP 2/3] Running exploratory analysis...")
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     weak_df  = identify_weak_labels(all_results, emotion_index)
@@ -82,11 +76,10 @@ def run_week2():
     (RESULTS_DIR / "baseline_observations.md").write_text(report, encoding="utf-8")
     print("  ✔ Observation report saved")
 
-    # Step 4 — summary + paper export
-    print("\n[STEP 4/4] Generating summary...")
-    from results.results import print_summary, export_for_paper
+    # Step 3 — summary
+    print("\n[STEP 3/3] Generating summary...")
+    from results.results import print_summary
     print_summary()
-    export_for_paper()
 
     print("\n✔ Week 2 complete.")
 
@@ -98,9 +91,14 @@ def run_week2():
 def run_week3():
     _banner("WEEK 3: Transformer Fine-Tuning (mBERT + XLM-R)")
 
-    from src.transformers_pipeline.run_transformer_pipeline import main as run_transformers
+    from src.transformers_pipeline.run_mbert import main as run_mbert
+    from src.transformers_pipeline.run_xlmr import main as run_xlmr
 
-    run_transformers(run_mbert=True, run_xlmr=True)
+    print("\n[1/2] Fine-tuning mBERT...")
+    run_mbert()
+
+    print("\n[2/2] Fine-tuning XLM-R...")
+    run_xlmr()
 
     # Print summary after transformers complete
     print("\n[POST-TRAINING] Generating summary...")
@@ -117,15 +115,59 @@ def run_week3():
 def run_week4():
     _banner("WEEK 4: Evaluation + Cross-Lingual Analysis")
 
-    # from analysis.crosslingual import main as run_crosslingual
-    # run_crosslingual()
+    from results.results import (
+        compare_languages,
+        load_weak_labels,
+        load_class_distribution,
+        print_summary,
+        RESULTS_DIR,
+    )
+    import pandas as pd
 
-    # from analysis.final_evaluation import main as run_final_eval
-    # run_final_eval()
+    print("\n[1/4] Cross-lingual model comparison...")
+    for metric in ("f1_macro", "f1_micro", "precision_macro", "recall_macro"):
+        try:
+            cmp = compare_languages(metric)
+            print(f"\n  {metric}:")
+            print(cmp.to_string(index=False))
+        except FileNotFoundError as e:
+            print(f"  ⚠ {e}")
 
-    from results.results import print_summary, export_for_paper
+    # Save cross-lingual comparison CSV for all key metrics
+    try:
+        rows = []
+        for metric in ("f1_macro", "f1_micro", "precision_macro", "recall_macro"):
+            row = compare_languages(metric)
+            row.insert(0, "metric", metric)
+            rows.append(row)
+        cross_df = pd.concat(rows, ignore_index=True)
+        cross_df.to_csv(RESULTS_DIR / "cross_lingual_comparison.csv", index=False)
+        print("\n  ✔ Saved results/cross_lingual_comparison.csv")
+    except FileNotFoundError:
+        pass
+
+    print("\n[2/4] Per-label performance breakdown...")
+    for fname, label in [
+        ("mbert_per_label_metrics.csv",  "mBERT"),
+        ("xlmr_per_label_metrics.csv",   "XLM-R"),
+    ]:
+        path = RESULTS_DIR / fname
+        if path.exists():
+            df = pd.read_csv(path)
+            print(f"\n  {label} — worst 5 labels by F1:")
+            print(df.nsmallest(5, "f1")[["language", "label", "f1", "recall", "support"]].to_string(index=False))
+        else:
+            print(f"  ⚠ {fname} not found")
+
+    print("\n[3/4] Weak label summary (baseline)...")
+    try:
+        weak_df = load_weak_labels()
+        print(weak_df[["language", "label", "f1", "recall", "support", "issue"]].to_string(index=False))
+    except FileNotFoundError:
+        print("  ⚠ weak_labels.csv not found — run Week 2 first")
+
+    print("\n[4/4] Final results summary...")
     print_summary()
-    export_for_paper()
 
     print("\n✔ Week 4 complete.")
 

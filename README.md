@@ -61,13 +61,14 @@ This phase compares transformer models directly against the baseline.
 
 ## Week 4 — Evaluation + Cross-Lingual Analysis
 
-Planned / In Progress:
+Implemented:
 
-* Consolidated final metrics table
-* Performance comparison charts
-* Cross-lingual transfer observations
-* Error analysis across languages
-* Final conclusions for research questions
+* Cross-lingual model comparison table across all three models and four metrics
+* Per-label breakdown for mBERT and XLM-R (worst-performing labels)
+* Weak label summary from baseline
+* Outputs saved to `results/cross_lingual_comparison.csv`
+
+Full analysis and discussion are in the written report (`documentation/report.tex`).
 
 ---
 
@@ -82,7 +83,7 @@ pip install -r requirements.txt
 Recommended Python version:
 
 ```text id="0o2n1m"
-Python 3.10+
+Python 3.9+
 ```
 
 ---
@@ -195,7 +196,7 @@ epochs = 3
 batch_size = 8
 learning_rate = 2e-5
 max_length = 128
-threshold = 0.5
+threshold = 0.3
 ```
 
 If GPU memory errors occur, reduce batch size first.

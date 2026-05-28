@@ -10,7 +10,7 @@ import sys
 import pandas as pd
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # project root
 
 from src.data.dataset_loader import run_pipeline
 from src.transformers_pipeline.transformer_train import (
