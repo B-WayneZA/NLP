@@ -56,9 +56,9 @@ MODELS = {
 # NOTE: transformers >=5.0 uses eval_strategy (not evaluation_strategy)
 #CPU. If that's too long, reduce num_train_epochs=1 or per_device_train_batch_size=4 in TRAINING_DEFAULTS inside transformer_train.py.
 TRAINING_DEFAULTS = {
-    "num_train_epochs":              1,
+    "num_train_epochs":              3,
     "learning_rate":                 2e-5,
-    "per_device_train_batch_size":   2,
+    "per_device_train_batch_size":   8,
     "per_device_eval_batch_size":    16,
     "weight_decay":                  0.01,
     "eval_strategy":                 "epoch",  # transformers 5.x (was evaluation_strategy)
@@ -73,7 +73,7 @@ TRAINING_DEFAULTS = {
 }
 
 MAX_LENGTH   = 128
-THRESHOLD    = 0.5
+THRESHOLD    = 0.3
 RESULTS_DIR  = Path("results")
 CHECKPOINTS  = Path("checkpoints")
 RANDOM_STATE = 42

@@ -14,10 +14,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from src.data.dataset_loader import run_pipeline
 from src.transformers_pipeline.transformer_train import (
-    run_model_all_languages,
+    run_single_experiment,
     results_to_dataframe,
     save_per_label_metrics,
     RESULTS_DIR,
+    MODELS,
 )
 
 
@@ -33,15 +34,34 @@ def main():
     datasets, emotion_index = run_pipeline()
     print(f"\n  Emotion index ({len(emotion_index)} classes): {emotion_index}")
 
-    # Train XLM-R on all languages
+    # Train XLM-R on all languages — save after each language to survive crashes
     print("\n[STEP 2] Fine-tuning XLM-R...")
-    xlmr_results = run_model_all_languages("xlmr", datasets, emotion_index)
+    print(f"\n{'#'*70}")
+    print(f"  MODEL: XLM-R  ({MODELS['xlmr']})")
+    print(f"{'#'*70}")
 
-    # Convert to DataFrame
-    print("\n[STEP 3] Saving results...")
+    xlmr_results = {}
+    csv_path = RESULTS_DIR / "xlmr_metrics.csv"
+
+    for lang_code in ["zul", "xho", "swa"]:
+        print(f"\nRunning XLM-R on {lang_code}...")
+        result = run_single_experiment(
+            model_key="xlmr",
+            lang_code=lang_code,
+            datasets=datasets,
+            emotion_index=emotion_index,
+        )
+        xlmr_results[lang_code] = result
+
+        # Save incrementally after each language so partial results survive
+        partial_df = results_to_dataframe(xlmr_results, "xlmr")
+        partial_df.to_csv(csv_path, index=False)
+        print(f"  ✔ Partial results saved → {csv_path} ({lang_code} done)")
+
+    # Final consolidated save
+    print("\n[STEP 3] Saving final results...")
     xlmr_df = results_to_dataframe(xlmr_results, "xlmr")
 
-    csv_path = RESULTS_DIR / "xlmr_metrics.csv"
     xlmr_df.to_csv(csv_path, index=False)
     print(f"  ✔ Saved to {csv_path}")
 

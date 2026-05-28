@@ -1,0 +1,505 @@
+\documentclass[11pt]{article}
+
+\usepackage{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{enumitem}
+
+\title{Multi-Label Emotion Classification for Bantu Languages:\\
+A Comparative Study of TF-IDF and Multilingual Transformer Models}
+
+\author{YM (Malaika) Kamangu \\  Department of Computer Science \\ University of Pretoria \\ \texttt{u23618583@tuks.co.za}
+  \And
+  NL (Lebogang) Masenya \\ Department of Computer Science \\ University of Pretoria \\ \texttt{u236747483@tuks.co.za}
+  \And
+  DK (David) Musa-Aisien \\ Department of Computer Science \\ University of Pretoria \\ \textbf{Group 12} --- COS 760 S1 2026 \\ \texttt{u23647374@tuks.co.za}}
+
+\begin{document}
+\maketitle
+
+% ──────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+Emotion analysis in African languages remains a significantly under-explored
+area despite the continent's remarkable linguistic diversity.
+This paper investigates multi-label emotion classification across three
+typologically related Bantu languages---isiZulu, isiXhosa, and Swahili---using
+the BRIGHTER dataset \citep{abdulmumin2024brighter}.
+We compare a TF-IDF with One-vs-Rest Logistic Regression baseline against
+two multilingual transformer models, mBERT \citep{devlin2019bert} and
+XLM-R \citep{conneau2020unsupervised}, for classifying six emotion categories
+(anger, disgust, fear, joy, sadness, surprise).
+The baseline achieves a macro F1 of 0.25--0.27 across languages, establishing
+a lower bound for the task.
+We document substantial class imbalance---particularly for disgust and fear---as
+a key challenge, and analyse cross-lingual differences in model behaviour.
+Our work contributes a reproducible multi-label emotion pipeline for low-resource
+Bantu languages and provides insights into how genealogical relatedness
+and data availability influence classifier performance.
+\end{abstract}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+Emotion analysis is a branch of NLP concerned with automatically detecting
+affective states expressed in text.
+Applications span mental health monitoring, social media analysis, and
+opinion mining---areas with growing relevance for the African continent,
+where over 2\,000 languages are spoken yet remain largely absent from mainstream
+NLP resources \citep{adelani2022masakhaner}.
+
+Research has disproportionately focused on high-resource languages such as
+English and Mandarin, leaving African languages underserved in both data
+availability and model development.
+This resource gap is consequential: without effective tools for low-resource
+languages, NLP-based services remain inaccessible to hundreds of millions of
+speakers.
+
+The BRIGHTER dataset \citep{abdulmumin2024brighter} addresses this gap by
+providing multi-label emotion annotations for 28 languages, including several
+Bantu varieties.
+In this work, we restrict our experiments to three genealogically related
+Bantu languages---isiZulu (\textit{zul}), isiXhosa (\textit{xho}), and
+Swahili (\textit{swa})---to investigate whether intra-family linguistic
+relatedness influences the efficacy of multilingual pre-trained models.
+
+\paragraph{Research Questions.}
+\begin{enumerate}[noitemsep]
+  \item How do multilingual transformer models (mBERT, XLM-R) compare to a
+        TF-IDF baseline for multi-label emotion classification in Bantu languages?
+  \item How does performance vary across isiZulu, isiXhosa, and Swahili, and
+        what role does available training data play?
+  \item What common prediction errors arise, and what do they reveal about
+        class imbalance and model limitations?
+\end{enumerate}
+
+\paragraph{Responsible NLP.}
+This work directly addresses language underrepresentation.
+By building and evaluating pipelines for Bantu languages, we contribute
+towards more equitable NLP---recognising that technological inclusion requires
+dedicated effort for low-resource communities.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Background}
+
+\subsection{Multilingual Pre-trained Models}
+
+BERT \citep{devlin2019bert} introduced the transformer encoder architecture
+pre-trained with masked language modelling.
+Its multilingual variant, mBERT, extends this to 104 languages using a shared
+subword vocabulary, enabling zero-shot and few-shot cross-lingual transfer
+without language-specific fine-tuning.
+XLM-R \citep{conneau2020unsupervised} improves on mBERT through a significantly
+larger and more diverse pre-training corpus (2.5 TB of filtered Common Crawl
+text across 100 languages), making it particularly effective for low-resource
+settings.
+Both models represent the current standard for cross-lingual NLP transfer.
+
+\subsection{Emotion Analysis in African Languages}
+
+Sentiment and emotion analysis for African languages has grown substantially
+with the introduction of benchmarks such as AfriSenti
+\citep{muhammad2023afrisenti}, a multilingual Twitter sentiment dataset, and
+MasakhaNER \citep{adelani2022masakhaner} for named entity recognition.
+\citet{mabokela2024explainable} demonstrated that pre-trained language models
+substantially outperform classical approaches for low-resource African language
+sentiment, while \citet{thangaraj2024crosslingual} found that XLM-R
+consistently outperforms mBERT on cross-lingual transfer for African languages.
+
+\subsection{Multi-label Emotion Classification}
+
+Unlike single-label sentiment, multi-label emotion classification assigns
+a set of emotion labels to each text instance, reflecting the co-occurrence
+of emotions in natural language.
+Standard approaches include binary relevance (one classifier per label),
+label-powerset methods, and, more recently, sigmoid-activated transformer
+classifiers with binary cross-entropy loss
+\citep{devlin2019bert, conneau2020unsupervised}.
+
+\subsection{The BRIGHTER Dataset}
+
+BRIGHTER \citep{abdulmumin2024brighter} provides multi-label emotion
+annotations across 32 languages, with annotations sourced from fluent speakers.
+The dataset includes six emotion categories---anger, disgust, fear, joy,
+sadness, and surprise---encoded as binary label vectors, making it directly
+applicable to multi-label classification.
+
+\paragraph{Gap.}
+Prior work has focused on broad cross-continental transfer without exploiting
+intra-family linguistic relatedness.
+This project addresses that gap by controlling language selection to a single
+genealogical family (Bantu) and examining how data availability interacts with
+model performance in a low-resource setting.
+The EthioEmo dataset was considered for
+Amharic coverage but was not included in experiments due to data availability
+constraints; we note this as a limitation and direction for future work.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Methodology}
+
+\subsection{Data}
+
+We use the BRIGHTER dataset for three Bantu languages.
+Table~\ref{tab:data} summarises split sizes and the emotion label distribution
+in the training split for each language.
+isiZulu and isiXhosa lack an official training partition; following standard
+practice in low-resource NLP, we use the development (validation) split as
+training data and evaluate on the held-out test set.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Lang} & \textbf{Train} & \textbf{Dev} & \textbf{Test} &
+  \textbf{Train src.} \\
+\midrule
+isiZulu  & ---        & 875    & 2{,}047 & validation \\
+isiXhosa & ---        & 682    & 1{,}594 & validation \\
+Swahili  & 3{,}307    & 1{,}102 & 3{,}312 & train \\
+\bottomrule
+\end{tabular}
+\caption{Dataset split sizes. isiZulu and isiXhosa have no official train
+split; the validation set is used as training data.}
+\label{tab:data}
+\end{table}
+
+\noindent
+Label distribution is highly skewed.
+For isiXhosa, \textit{sadness} accounts for 41.2\% of training labels while
+\textit{disgust} appears in only 0.4\% (3 samples)---a 93.7:1 imbalance ratio.
+isiZulu shows moderate imbalance (7.2:1), and Swahili's most severe case is
+\textit{fear} at 2.8\% of labels (93 samples, ratio 5.8:1).
+
+\subsection{Preprocessing}
+
+Text is used without stemming or lemmatisation, preserving morphological
+richness important in Bantu languages.
+For the TF-IDF baseline, accents are retained (\texttt{strip\_accents=None})
+to avoid losing language-specific characters.
+Transformer models apply their native subword tokenisation (WordPiece for
+mBERT; SentencePiece for XLM-R) with maximum sequence length 128.
+
+\subsection{Models}
+
+\paragraph{TF-IDF Baseline.}
+A TF-IDF vectoriser (maximum 5{,}000 features, unigrams and bigrams,
+minimum document frequency 2) feeds a One-vs-Rest Logistic Regression
+classifier (\texttt{class\_weight=``balanced''}, \texttt{max\_iter=1000}).
+The \texttt{balanced} weighting compensates for label imbalance by inversely
+weighting class frequencies.
+
+\paragraph{mBERT.}
+\texttt{bert-base-multilingual-cased} \citep{devlin2019bert} is fine-tuned
+with a multi-label classification head.
+The \texttt{problem\_type=``multi\_label\_classification''} configuration
+applies binary cross-entropy with logits (BCEWithLogitsLoss) natively.
+
+\paragraph{XLM-R.}
+\texttt{xlm-roberta-base} \citep{conneau2020unsupervised} uses an identical
+head and loss configuration to mBERT, enabling direct comparison.
+
+\subsection{Training and Evaluation Setup}
+
+All transformer models are trained under identical, controlled conditions
+to ensure fair comparison: 3 epochs, learning rate $2 \times 10^{-5}$,
+batch size 8, weight decay 0.01, seed 42.
+At inference, logits are converted to probabilities via sigmoid and binarised
+at threshold $\tau = 0.3$---a value lower than the standard 0.5 to improve
+recall on infrequent emotion classes.
+
+\paragraph{Evaluation metrics.}
+Macro F1 is the primary metric, as it treats all classes equally and is robust
+to class imbalance.
+Supplementary metrics include micro F1, macro precision, macro recall,
+Hamming loss, and macro Jaccard score.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Experiments and Results}
+
+\subsection{Baseline Performance}
+
+Table~\ref{tab:baseline} reports TF-IDF + Logistic Regression results.
+Macro F1 scores range from 0.247 (Swahili) to 0.265 (isiXhosa).
+Despite isiXhosa and isiZulu using the development set as training data
+(limiting training size to 682 and 875 samples respectively), their macro F1
+is comparable to Swahili, which has 3{,}307 training samples.
+However, Swahili achieves a notably lower micro F1 (0.293), suggesting its
+predictions are more uniformly spread but less precise on frequent classes.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Language} & \textbf{F1-mac} & \textbf{F1-mic} & \textbf{Prec-mac} &
+  \textbf{Rec-mac} \\
+\midrule
+isiZulu  & 0.257 & 0.341 & 0.235 & 0.290 \\
+isiXhosa & 0.265 & 0.471 & 0.247 & 0.321 \\
+Swahili  & 0.247 & 0.293 & 0.214 & 0.298 \\
+\bottomrule
+\end{tabular}
+\caption{TF-IDF + Logistic Regression baseline results.}
+\label{tab:baseline}
+\end{table}
+
+\subsection{Transformer Results}
+
+Tables~\ref{tab:mbert} and~\ref{tab:xlmr} report fine-tuned mBERT and
+XLM-R performance.
+
+The mBERT results reveal a strong training-data dependence.
+isiXhosa (682 training samples) achieves macro F1 of 0.244 with mBERT,
+broadly comparable to its TF-IDF baseline (0.265), while micro F1 improves
+markedly from 0.471 to 0.536 --- indicating better calibration on frequent
+classes.
+isiZulu (875 training samples) shows lower macro F1 with mBERT (0.082)
+than the TF-IDF baseline (0.257), suggesting that the transformer's
+inductive biases are harder to activate with fewer than ~900 labelled examples
+in a multi-label setting.
+We attribute this result partly to the data constraint and partly to the
+severe sparsity of the minority emotion classes (disgust at 2.9\%,
+fear at 3.1\% of isiZulu training labels).
+Swahili, with the largest training set (3{,}307 examples), achieves macro
+F1 of 0.145 --- slightly better than isiZulu but still below its TF-IDF
+baseline of 0.248.  The high precision (0.254) relative to recall (0.153)
+suggests the model is conservative, only predicting emotions when it is
+confident, which suppresses recall on minority classes.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Language} & \textbf{F1-mac} & \textbf{F1-mic} & \textbf{Prec-mac} &
+  \textbf{Rec-mac} \\
+\midrule
+isiZulu  & 0.082 & 0.320 & 0.065 & 0.109 \\
+isiXhosa & 0.244 & 0.536 & 0.213 & 0.291 \\
+Swahili  & 0.145 & 0.287 & 0.254 & 0.153 \\
+\bottomrule
+\end{tabular}
+\caption{mBERT fine-tuning results (3 epochs, batch 8, $\tau{=}0.3$).}
+\label{tab:mbert}
+\end{table}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Language} & \textbf{F1-mac} & \textbf{F1-mic} & \textbf{Prec-mac} &
+  \textbf{Rec-mac} \\
+\midrule
+isiZulu  & 0.000 & 0.000 & 0.000 & 0.000 \\
+isiXhosa & 0.170 & 0.486 & 0.146 & 0.235 \\
+Swahili  & 0.184 & 0.332 & 0.235 & 0.188 \\
+\bottomrule
+\end{tabular}
+\caption{XLM-R fine-tuning results (3 epochs, batch 8, $\tau{=}0.3$).}
+\label{tab:xlmr}
+\end{table}
+
+XLM-R produces a different pattern than mBERT.
+For isiZulu (875 samples), XLM-R collapses to all-zero predictions at every
+threshold, whereas mBERT at least achieves macro F1 of 0.082.
+XLM-R has 278M parameters vs.\ mBERT's 178M, making it more data-hungry
+to fine-tune; with under 900 labelled examples the model cannot escape
+a degenerate zero-prediction solution.
+For isiXhosa (682 samples), XLM-R achieves macro F1 of 0.170, lower than
+mBERT's 0.244 but with a competitive micro F1 of 0.486.
+The reversal occurs for Swahili: XLM-R (F1 = 0.184) outperforms mBERT
+(F1 = 0.145) when trained on 3{,}307 examples, confirming that XLM-R
+benefits more from additional training data than mBERT does.
+Notably, the TF-IDF baseline (F1 = 0.247--0.265) outperforms both
+transformer models across all three languages under these data constraints,
+highlighting the challenge of deploying large pretrained transformers in
+genuinely low-resource settings without dedicated hyperparameter tuning
+per language.
+
+\subsection{Weak Label Analysis}
+
+Table~\ref{tab:weak} shows the five emotion labels identified as weak
+(macro F1 $< 0.15$) in the baseline model.
+All weak labels correspond to the rarest classes in their respective
+language splits.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Lang} & \textbf{Label} & \textbf{F1} & \textbf{Recall} &
+  \textbf{Support} \\
+\midrule
+isiXhosa & disgust & 0.017 & 0.125 & 8 \\
+isiXhosa & fear    & 0.044 & 0.065 & 31 \\
+isiXhosa & anger   & 0.069 & 0.091 & 66 \\
+isiZulu  & disgust & 0.075 & 0.119 & 59 \\
+Swahili  & fear    & 0.069 & 0.064 & 94 \\
+\bottomrule
+\end{tabular}
+\caption{Weak labels (F1 $< 0.15$) from the TF-IDF baseline.
+Support reflects test-set samples.}
+\label{tab:weak}
+\end{table}
+
+\noindent
+isiXhosa \textit{disgust} is the most extreme case: despite 8 test samples,
+the model achieves only F1 = 0.017, with the extremely limited training
+exposure (3 training samples) making generalisation essentially impossible.
+
+\subsection{Error Analysis}
+
+We categorised prediction errors into three types based on the test set:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{False negatives}: the model predicts no labels despite ground
+        truth labels being present. This is the most common failure mode across
+        all three languages.
+  \item \textbf{Over-prediction}: the model predicts labels that do not appear
+        in the ground truth.
+  \item \textbf{Partial match}: some labels are predicted correctly but
+        additional labels are missed or spuriously added.
+\end{itemize}
+
+False negatives dominate across isiZulu, isiXhosa, and Swahili.
+A representative example from isiZulu illustrates the challenge:
+the text \textit{``bayaveva ngokujola kukathisha nomfundi''} (expressing anger
+about a teacher--student relationship) receives no prediction, likely because
+TF-IDF features cannot generalise the infrequent vocabulary.
+Over-prediction errors tend to co-occur with sadness and disgust, suggesting
+the model associates surface-level negative words with multiple emotion classes
+simultaneously.
+
+\paragraph{Responsible NLP.}
+Performance disparities across languages are notable: isiXhosa achieves a
+higher micro F1 (0.471) than isiZulu (0.341), despite having fewer training
+samples. This counterintuitive result is likely driven by isiXhosa's highly
+skewed distribution (sadness + joy account for 72.3\% of labels), which makes
+predictions on the dominant classes easier.
+Such disparities highlight that aggregate metrics can obscure systematic
+disadvantage for underrepresented emotion categories, and that evaluation
+must be disaggregated per label.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Reflections and Discussion}
+
+\subsection{What Worked}
+
+The TF-IDF + Logistic Regression baseline provides a consistent,
+reproducible lower bound and is computationally accessible on consumer
+hardware.
+The \texttt{class\_weight=``balanced''} configuration mitigated---though did
+not eliminate---the effect of class imbalance.
+The modular pipeline architecture allows baseline and transformer experiments
+to share the same data loading and evaluation utilities, ensuring comparability.
+
+\subsection{Challenges}
+
+\paragraph{Limited training data.}
+isiZulu and isiXhosa lack official training splits in BRIGHTER, forcing use
+of the development set as a training surrogate.
+With only 682--875 samples, models are severely data-constrained for a
+six-class multi-label problem.
+
+\paragraph{Class imbalance.}
+isiXhosa \textit{disgust} appears in 0.4\% of training samples (3 instances),
+making it statistically impossible for any model to learn a meaningful
+decision boundary.
+Even Swahili---with the largest training set---has \textit{fear} at only 2.8\%.
+Future work should explore data augmentation techniques, including back-translation
+or cross-lingual transfer from higher-resource languages.
+
+\paragraph{Computational constraints.}
+Transformer fine-tuning was conducted on CPU, limiting the number of training
+epochs feasible within project timelines.
+Initial mBERT experiments with a single epoch and batch size of 2 resulted
+in training collapse (all-zero predictions), likely due to insufficient gradient
+signal before convergence.
+Increasing training to 3 epochs, batch size 8, and lowering the classification
+threshold to 0.3 addressed this failure mode.
+
+\paragraph{EthioEmo.}
+The proposal identified the EthioEmo dataset as a potential Amharic language
+complement to the Bantu languages in BRIGHTER.
+Due to data availability and time constraints, EthioEmo was not incorporated
+into the final experiments.
+Including Amharic as a non-Bantu African language reference point remains a
+clear direction for future work.
+
+\subsection{Responsible AI Principles}
+
+\paragraph{Data openness.}
+All datasets used (BRIGHTER) are publicly available research datasets, and
+all code and model artefacts for this project are version-controlled.
+
+\paragraph{Fairness across languages.}
+The controlled selection of Bantu languages was an intentional choice to study
+cross-lingual fairness within a genealogical family.
+Results show that performance inequality exists even among related languages,
+driven primarily by training data volume and class distribution rather than
+linguistic distance alone.
+
+\paragraph{Limitations and risks.}
+The models evaluated here are research prototypes not suitable for deployment.
+Emotion classification carries inherent risks of misclassification, which
+could have adverse consequences in sensitive applications such as mental health
+monitoring.
+The near-zero performance on rare emotions (disgust, fear) means these classes
+are effectively undetected by all models evaluated.
+
+\paragraph{Broader societal impact.}
+Building emotion analysis infrastructure for Bantu languages has positive
+long-term implications for social media analysis, public health surveillance,
+and community voice amplification.
+However, any deployment should involve community consultation and ongoing
+fairness auditing.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+We presented a comparative evaluation of TF-IDF and multilingual transformer
+models for multi-label emotion classification in three Bantu languages
+(isiZulu, isiXhosa, Swahili) using the BRIGHTER dataset.
+
+The TF-IDF + Logistic Regression baseline achieves macro F1 of 0.247--0.265,
+establishing a reproducible lower bound.
+Key findings include: (1) severe class imbalance---particularly for
+\textit{disgust} and \textit{fear}---substantially harms recall on minority
+classes; (2) false negatives are the dominant error type, suggesting
+models default to abstaining rather than over-predicting;
+(3) the TF-IDF baseline outperforms both transformer models on all three
+languages under the data constraints of this study.
+
+For the transformer experiments, mBERT and XLM-R exhibit complementary
+data-sensitivity profiles.
+mBERT (178M parameters) generalises better in the lowest-data conditions
+(isiZulu: F1 = 0.082; isiXhosa: F1 = 0.244), whereas XLM-R (278M parameters)
+achieves higher macro F1 on Swahili (0.184 vs.\ mBERT's 0.145) once 3{,}307
+training examples are available.
+XLM-R completely fails on isiZulu (F1 = 0.000), predicting no positive
+labels at any threshold---a direct consequence of attempting to fine-tune
+278M parameters on fewer than 900 labelled instances.
+
+These findings underscore that data volume is the primary bottleneck for
+emotion analysis in low-resource Bantu languages, and that larger pretrained
+models are not automatically superior when training data is scarce.
+Future work should investigate data augmentation, AfroXLMR
+\citep{alabi2022adapting}, and cross-lingual transfer from richer
+corpora to address the fundamental data scarcity that constrains all
+models evaluated in this setting.
+
+% ──────────────────────────────────────────────────────────────────────────────
+\bibliography{custom}
+
+\end{document}
