@@ -83,9 +83,7 @@ Full results and discussion: [`documentation/Group12_Report.pdf`](documentation/
 │
 └── documentation/
     ├── Group12_Report.pdf           # Compiled final report (ACL format)
-    ├── Project Template_ African Languages for Emotion Analysis.docx
-    │                                # Original project template / brief
-    └── Proposal Idea.docx           # Research proposal submitted earlier
+    └── Group12_Proposal.pdf         # Research proposal submitted earlier
 ```
 
 ---
